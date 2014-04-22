@@ -1,5 +1,6 @@
 package database;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,50 +10,32 @@ import java.sql.Statement;
 public class DataBase {
 	private Connection connection;
 
-	public DataBase(int one) {
-		try {
-			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:sample.db");
-			Statement statement = connection.createStatement();
-			statement.executeUpdate("create table person (id integer, name string)");
-			statement.executeUpdate("insert into person values(1, 'leo')");
-			statement.executeUpdate("insert into person values(2, 'yui')");
-			ResultSet rs = statement.executeQuery("select * from person");
-			while (rs.next()) {
-				// read the result set
-				System.out.println("name = " + rs.getString("name"));
-				System.out.println("id = " + rs.getInt("id"));
-			}
-
-		} catch (SQLException e) {
-			// if the error message is "out of memory",
-			// it probably means no database file is found
-			System.err.println(e.getMessage());
-		} finally {
-			try {
-				if (connection != null)
-					connection.close();
-			} catch (SQLException e) {
-				// connection close failed.
-				System.err.println(e);
-			}
-		}
-	}
-	
 	public DataBase() {
-		
+
+		// Create directory on first run
+		String rosemontDir = System.getProperty("user.home")
+				+ "/Patisserie Rosemont";
+		File rDir = new File(rosemontDir);
+		if (!rDir.exists()) {
+			boolean succesful = rDir.mkdir();
+			if (succesful) {
+				System.out.print("Created:" + rosemontDir);
+			}
+		}
+
 		try {
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:C:/Patisserie Rosemont/test.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:"
+					+ rosemontDir + "/test.db");
 
 		} catch (SQLException e) {
-			// if the error message is "out of memory",
-			// it probably means no database file is found
 			System.err.println(e.getMessage());
 		}
+		// initDB();
+		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
 	}
-	
-	public void Close() {
+
+	public void close() {
 		try {
 			if (connection != null)
 				connection.close();
@@ -61,19 +44,53 @@ public class DataBase {
 			System.err.println(e);
 		}
 	}
-	
-	public void InitDB() {
+
+	public void addCustomer(String name, String city, String address,
+			String postal, String phone) {
 		Statement statement;
 		try {
 			statement = connection.createStatement();
-			statement.executeUpdate("create table order");
-		
+			statement.executeUpdate("insert into "
+					+ "customers(name, city, address, postalcode, phone) "
+					+ "values(" + "'" + name + "', " + "'" + city + "', " + "'"
+					+ address + "', " + "'" + postal + "', " + "'" + phone
+					+ "'" + ")");
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+		close();
+	}
+
+	public void clearDB() {
+		Statement statement;
+	
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate("drop table if exists customers");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 	}
-	
-	
+
+	public void initDB() {
+		Statement statement;
+		try {
+			statement = connection.createStatement();
+			
+			statement.executeUpdate("create table customers ("
+					+ "customerID integer primary key autoincrement, "
+					+ "name varchar(100) not null, "
+					+ "city varchar(50) not null, " + "address varchar(200), "
+					+ "postalcode varchar(7), " + "phone varchar(14) " + ")");
+			
+			
+			
+			
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
