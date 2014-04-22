@@ -31,8 +31,53 @@ public class DataBase {
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 		}
-		// initDB();
+		clearDB();
+		initDB();
 		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
+		createOrder(1, "2014-04-22");
+		addProduct("bread", "chleb zytni", 2.00, "2014-04-22");
+		addProduct("bread", "chleb wieski", 3.00, "2014-04-22");
+		addToOrder(1, 1, 15);
+		addToOrder(1, 2, 25);
+
+	}
+
+	private void addToOrder(int orderID, int productID, int quantity) {
+		Statement statement;
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate("insert into "
+					+ "orderDetails(orderID, productID, quantity) "
+					+ "values("
+					+ "'" + orderID + "', "
+					+ "'" + productID + "', "
+					+ "'" + quantity + "'"
+					+ ")");
+					
+					
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	private void addProduct(String category, String name, double mtlPrice, String date) {
+		Statement statement;
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate("insert into "
+					+ "products(category, name, montrealPrice, dateCreated, dateEffective) "
+					+ "values("
+					+ "'" + category + "', "
+					+ "'" + name + "', "
+					+ "'" + mtlPrice + "', "
+					+ "'" + date + "', "
+					+ "'" + date + "'"
+					+ ")");
+					
+					
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	public void close() {
@@ -59,15 +104,34 @@ public class DataBase {
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 		}
-		close();
+	}
+
+	public void createOrder(int customerID, String date) {
+		Statement statement;
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate("insert into "
+					+ "orders(customerID, orderDate) " 
+					+ "values(" 
+					+ "'" + customerID + "', " 
+					+ "'" + date + "'" 
+					+ ")");
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+
 	}
 
 	public void clearDB() {
 		Statement statement;
-	
+
 		try {
 			statement = connection.createStatement();
 			statement.executeUpdate("drop table if exists customers");
+			statement.executeUpdate("drop table if exists orders");
+			statement.executeUpdate("drop table if exists orderDetails");
+			statement.executeUpdate("drop table if exists products");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -77,16 +141,37 @@ public class DataBase {
 		Statement statement;
 		try {
 			statement = connection.createStatement();
-			
+
 			statement.executeUpdate("create table customers ("
 					+ "customerID integer primary key autoincrement, "
 					+ "name varchar(100) not null, "
 					+ "city varchar(50) not null, " + "address varchar(200), "
 					+ "postalcode varchar(7), " + "phone varchar(14) " + ")");
-			
-			
-			
-			
+
+			statement.executeUpdate("create table orders ("
+					+ "orderID integer primary key autoincrement, "
+					+ "customerID integer references customers, "
+					+ "orderDate date not null, "
+					+ "total double, "
+					+ "paid boolean default false" + ")");
+
+			statement.executeUpdate("create table products ("
+					+ "productID integer primary key autoincrement, "
+					+ "name varchar(75) not null, "
+					+ "category varchar(50) not null, "
+					+ "montrealPrice double, " + "ottawaPrice double, "
+					+ "kosciolPrice double, " + "krazyKrisPrice double, "
+					+ "cecilPrice double, " + "rosemontStorePrice double, "
+					+ "updated boolean default false, "
+					+ "dateCreated date not null, "
+					+ "dateEffective date not null, " + "dateEnd date, "
+					+ "dateReplaced date, " + "originalID integer" + ")");
+
+			statement.executeUpdate("create table orderDetails ("
+					+ "orderID integer references orders, "
+					+ "productID integer references products, "
+					+ "quantity integer, " 
+					+ "subtotal double" + ")");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
