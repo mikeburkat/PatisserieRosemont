@@ -11,7 +11,6 @@ public class DataBase {
 	private Connection connection;
 
 	public DataBase() {
-
 		// Create directory on first run
 		String rosemontDir = System.getProperty("user.home")
 				+ "/Patisserie Rosemont";
@@ -31,8 +30,12 @@ public class DataBase {
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 		}
+		
+		// clears and recreates the tables for when I was testing schema
 		clearDB();
 		initDB();
+		
+		// testing the database
 		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
 		createOrder(1, "2014-04-22");
 		addProduct("bread", "chleb zytni", 2.00, "2014-04-22");
@@ -42,7 +45,7 @@ public class DataBase {
 
 	}
 
-	private void addToOrder(int orderID, int productID, int quantity) {
+	public void addToOrder(int orderID, int productID, int quantity) {
 		Statement statement;
 		try {
 			statement = connection.createStatement();
@@ -54,13 +57,12 @@ public class DataBase {
 					+ "'" + quantity + "'"
 					+ ")");
 					
-					
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 		}
 	}
 
-	private void addProduct(String category, String name, double mtlPrice, String date) {
+	public void addProduct(String category, String name, double mtlPrice, String date) {
 		Statement statement;
 		try {
 			statement = connection.createStatement();
@@ -74,19 +76,8 @@ public class DataBase {
 					+ "'" + date + "'"
 					+ ")");
 					
-					
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
-		}
-	}
-
-	public void close() {
-		try {
-			if (connection != null)
-				connection.close();
-		} catch (SQLException e) {
-			// connection close failed.
-			System.err.println(e);
 		}
 	}
 
@@ -125,7 +116,6 @@ public class DataBase {
 
 	public void clearDB() {
 		Statement statement;
-
 		try {
 			statement = connection.createStatement();
 			statement.executeUpdate("drop table if exists customers");
@@ -141,20 +131,23 @@ public class DataBase {
 		Statement statement;
 		try {
 			statement = connection.createStatement();
-
+			
+			// creates the customers table
 			statement.executeUpdate("create table customers ("
 					+ "customerID integer primary key autoincrement, "
 					+ "name varchar(100) not null, "
 					+ "city varchar(50) not null, " + "address varchar(200), "
 					+ "postalcode varchar(7), " + "phone varchar(14) " + ")");
-
+			
+			// creates the orders table
 			statement.executeUpdate("create table orders ("
 					+ "orderID integer primary key autoincrement, "
 					+ "customerID integer references customers, "
 					+ "orderDate date not null, "
 					+ "total double, "
 					+ "paid boolean default false" + ")");
-
+			
+			// creates the products table
 			statement.executeUpdate("create table products ("
 					+ "productID integer primary key autoincrement, "
 					+ "name varchar(75) not null, "
@@ -166,7 +159,8 @@ public class DataBase {
 					+ "dateCreated date not null, "
 					+ "dateEffective date not null, " + "dateEnd date, "
 					+ "dateReplaced date, " + "originalID integer" + ")");
-
+			
+			// creates the order details table
 			statement.executeUpdate("create table orderDetails ("
 					+ "orderID integer references orders, "
 					+ "productID integer references products, "
@@ -178,4 +172,13 @@ public class DataBase {
 		}
 	}
 
+	public void close() {
+		try {
+			if (connection != null)
+				connection.close();
+		} catch (SQLException e) {
+			// connection close failed.
+			System.err.println(e);
+		}
+	}
 }
