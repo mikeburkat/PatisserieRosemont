@@ -7,6 +7,7 @@ import javax.swing.JTabbedPane;
 import orders.OrdersComponent;
 import print.PrintComponent;
 import reports.ReportsComponent;
+import database.DataBase;
 import date.DateChooser;
 import drivers.DriversComponent;
 
@@ -15,6 +16,8 @@ public class PatisserieRosemont extends JTabbedPane{
 	private static final long serialVersionUID = 1L;
 	
 	private PatisserieRosemont() {
+		
+		DataBase db = new DataBase();
 		
 		JComponent dateChooser = new DateChooser();
 		this.addTab("Data", dateChooser);
