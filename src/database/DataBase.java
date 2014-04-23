@@ -6,13 +6,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+
 public class DataBase {
 	private Connection connection;
 
 	public DataBase() {
 		// Create directory on first run
 		String rosemontDir = System.getProperty("user.home")
-				+ "/Patisserie Rosemont";
+				+ "/Patisserie Rosemont/";
 		File rDir = new File(rosemontDir);
 		if (!rDir.exists()) {
 			boolean succesful = rDir.mkdir();
@@ -20,14 +21,19 @@ public class DataBase {
 				System.out.print("Created:" + rosemontDir);
 			}
 		}
+		
+		
 
 		try {
 			// create a database connection
+			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection("jdbc:sqlite:"
-					+ rosemontDir + "/test.db");
+					+ rosemontDir + "test.db");
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 		
 		// clears and recreates the tables for when I was testing schema
