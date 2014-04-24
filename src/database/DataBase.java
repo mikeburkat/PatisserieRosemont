@@ -39,6 +39,8 @@ public class DataBase {
 		// clears and recreates the tables for when I was testing schema
 		clearDB();
 		initDB();
+		initProducts();
+		initStores();
 		
 		// testing the database
 		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
@@ -176,6 +178,18 @@ public class DataBase {
 			e.printStackTrace();
 		}
 	}
+	
+	public void initStores() {
+		DataLoader dl = new DataLoader();
+		dl.importStores();
+	}
+	
+	public void initProducts() {
+		DataLoader dl = new DataLoader();
+		dl.importProducts();
+	}
+	
+	
 
 	public void close() {
 		try {
