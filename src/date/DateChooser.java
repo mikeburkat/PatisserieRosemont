@@ -1,7 +1,6 @@
 package date;
 
-import java.awt.BorderLayout;
-
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -9,13 +8,14 @@ import net.miginfocom.swing.MigLayout;
 
 import com.toedter.calendar.JCalendar;
 
-public class DateChooser extends JPanel {
+public class DateChooser extends JComponent {
 	
 	private static final long serialVersionUID = 1L;
 	private JCalendar calendar;
 	private JLabel label;
 
 	public DateChooser() {
+		
 		MigLayout mig = new MigLayout("wrap 3");
 
 		mig.setColumnConstraints("[30][grow][30]");
@@ -30,9 +30,6 @@ public class DateChooser extends JPanel {
 		add(label, "center");
 		
 		add(new JLabel(""), "cell 2 0");
-		
-		
-		
 		add(new JLabel(""), "cell 0 1 1 2");
 		
 		calendar = new JCalendar();
@@ -40,8 +37,5 @@ public class DateChooser extends JPanel {
 		add(calendar, "grow");
 		
 		add(new JLabel(""), "cell 2 1 1 2");
-		
-		
 	}
-
 }

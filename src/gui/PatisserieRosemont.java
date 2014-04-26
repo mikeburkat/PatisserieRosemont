@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,14 +17,16 @@ import drivers.DriversComponent;
 public class PatisserieRosemont extends JTabbedPane{
 	
 	private static final long serialVersionUID = 1L;
+	private DataBase db;
 	
 	private PatisserieRosemont() {
 		
-		DataBase db = new DataBase();
+		db = new DataBase();
 		
-		JPanel dateChooser = new DateChooser();
-		//JCalendar dateChooser = new JCalendar();
-		this.addTab("Data", dateChooser);
+		JComponent dateChooser = new DateChooser();
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(dateChooser, BorderLayout.CENTER);
+		this.addTab("Data", panel);
 		
 		JComponent orders = new OrdersComponent();
 		this.addTab("Ordery", orders);
