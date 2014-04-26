@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import orders.OrdersComponent;
@@ -19,7 +20,8 @@ public class PatisserieRosemont extends JTabbedPane{
 		
 		DataBase db = new DataBase();
 		
-		JComponent dateChooser = new DateChooser();
+		JPanel dateChooser = new DateChooser();
+		//JCalendar dateChooser = new JCalendar();
 		this.addTab("Data", dateChooser);
 		
 		JComponent orders = new OrdersComponent();
