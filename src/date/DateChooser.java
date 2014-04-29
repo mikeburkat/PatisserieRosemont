@@ -17,6 +17,7 @@ public class DateChooser extends JComponent {
 	private JCalendar calendar;
 	private JLabel label;
 	private SimpleDateFormat sdf;
+	private int clicks;
 
 	public DateChooser() {
 		sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -43,22 +44,38 @@ public class DateChooser extends JComponent {
 		add(calendar, "grow");
 
 		add(new JLabel(""), "cell 2 1 1 2");
+
+		clicks = 0;
 	}
 
-	private String GetCalendarDate() {
+	private String getCalendarDate() {
 		Date d = calendar.getDate();
 		String dat = sdf.format(d);
 		return dat;
 	}
 
-	public void SetDate(String date) {
-		label.setText(date);
-		System.out.println(date);
+	public void setLabel(String date) {
+		if (clicks < 2) {
+			label.setText("date not selected");
+		} else {
+			label.setText(date);
+			System.out.println(date);
+		}
+	}
+	
+	public boolean isDateSet() {
+		if (clicks < 2) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	private class OnDaySelected implements java.beans.PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
-			SetDate(GetCalendarDate());
+			clicks++;
+			setLabel(getCalendarDate());
+			
 		}
 	}
 
