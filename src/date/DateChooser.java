@@ -75,7 +75,6 @@ public class DateChooser extends JComponent {
 		public void propertyChange(PropertyChangeEvent evt) {
 			clicks++;
 			setLabel(getCalendarDate());
-			
 		}
 	}
 

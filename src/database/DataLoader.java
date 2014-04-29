@@ -9,11 +9,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import java.io.File;
+import java.sql.Connection;
 
 public class DataLoader {
-
-	public DataLoader() {
-
+	private DataBase db;
+	
+	public DataLoader(DataBase database) {
+		db = database;
 	}
 
 	public void importStores() {
@@ -46,6 +48,12 @@ public class DataLoader {
 					System.out.println("First Name : "
 							+ eElement.getElementsByTagName("name").item(0)
 									.getTextContent());
+					db.addCustomer(eElement.getElementsByTagName("name").item(0).getTextContent(),
+							eElement.getElementsByTagName("city").item(0).getTextContent(),
+							eElement.getElementsByTagName("address").item(0).getTextContent(),
+							"",
+							eElement.getElementsByTagName("phone").item(0).getTextContent()
+							);
 				}
 			}
 
@@ -84,6 +92,10 @@ public class DataLoader {
 					System.out.println("First Name : "
 							+ eElement.getElementsByTagName("name").item(0)
 									.getTextContent());
+					
+					db.addProduct("Misc", eElement.getElementsByTagName("name").item(0).getTextContent(), 
+							Double.parseDouble( eElement.getElementsByTagName("montrealPrice").item(0).getTextContent() )
+							, "2014-04-28");
 				}
 			}
 		} catch (Exception e) {

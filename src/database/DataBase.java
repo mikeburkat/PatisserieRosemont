@@ -180,12 +180,12 @@ public class DataBase {
 	}
 	
 	public void initStores() {
-		DataLoader dl = new DataLoader();
+		DataLoader dl = new DataLoader(this);
 		dl.importStores();
 	}
 	
 	public void initProducts() {
-		DataLoader dl = new DataLoader();
+		DataLoader dl = new DataLoader(this);
 		dl.importProducts();
 	}
 	
