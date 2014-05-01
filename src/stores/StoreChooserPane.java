@@ -7,6 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
+
 public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 
 	private static final long serialVersionUID = 1L;
@@ -24,9 +26,16 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 		montreal.addPropertyChangeListener(this);
 		ottawa.addPropertyChangeListener(this);
 		
-		this.add(selectedStore);
-		this.add(montreal);
-		this.add(ottawa);
+		MigLayout mig = new MigLayout("wrap 2");
+		mig.setColumnConstraints("[grow][grow]");
+		mig.setRowConstraints("[30]20[grow]");
+		
+		this.setLayout(mig);
+		
+		
+		this.add(selectedStore, "center, span 2");
+		this.add(montreal, "center");
+		this.add(ottawa, "center");
 		
 	}
 	
