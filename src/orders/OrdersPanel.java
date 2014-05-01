@@ -7,22 +7,38 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class OrdersPanel extends JPanel implements ActionListener {
+import net.miginfocom.swing.MigLayout;
+
+public class OrdersPanel extends JPanel{
 
 	private static final long serialVersionUID = 1L;
-	private JButton storeChooserButton;
-	private JLabel chosenStore;
+	private JLabel store;
+	private JLabel date;
 	
 	public OrdersPanel() {
-
-
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object src = e.getSource();
-
+		store = new JLabel("Sklep: Not chosen");
+		date = new JLabel("Data: Not chosen");
+		
+		MigLayout mig = new MigLayout("wrap 4");
+		mig.setColumnConstraints("[grow][grow][grow][grow]");
+		mig.setRowConstraints("[30]20[grow][grow][grow]");
+		
+		this.setLayout(mig);
+		
+		this.add(date, "span 2, center");
+		this.add(store, "span 2, center");
 		
 	}
+
+	
+	
+	public void setDate(String d) {
+		date.setText("Data: " + d);
+	}
+	
+	public void setStore(String s) {
+		store.setText("Sklep: " + s);
+	}
+	
 
 }

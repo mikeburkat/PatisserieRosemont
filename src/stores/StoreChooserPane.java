@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import orders.OrdersPanel;
 
 public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 
@@ -16,9 +17,10 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 	private StoreChooser ottawa;
 	private JLabel selectedStore;
 	private JButton addNew;
+	private OrdersPanel orders;
 
-	public StoreChooserPane() {
-		
+	public StoreChooserPane(OrdersPanel o) {
+		orders = o;
 		selectedStore = new JLabel("Not Selected Yet");
 		montreal = new StoreChooser("Montreal");
 		ottawa = new StoreChooser("Ottawa");
@@ -31,7 +33,6 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 		mig.setRowConstraints("[30]20[grow]");
 		
 		this.setLayout(mig);
-		
 		
 		this.add(selectedStore, "center, span 2");
 		this.add(montreal, "center");
@@ -49,13 +50,16 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		System.out.println(evt.getPropertyName() + " " + evt.getNewValue());
-		
-		
+		// clear selection if selection in different city
 		if (evt.getPropertyName() == "Montreal") {
-			selectedStore.setText((String) evt.getNewValue());
+			String s = (String) evt.getNewValue();
+			selectedStore.setText(s);
+			orders.setStore(s);
 			ottawa.clearSelection();
 		} else if (evt.getPropertyName() == "Ottawa") {
-			selectedStore.setText((String) evt.getNewValue());
+			String s = (String) evt.getNewValue();
+			selectedStore.setText(s);
+			orders.setStore(s);
 			montreal.clearSelection();
 		}
 		

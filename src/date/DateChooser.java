@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
+import orders.OrdersPanel;
 
 import com.toedter.calendar.JCalendar;
 
@@ -17,9 +18,11 @@ public class DateChooser extends JPanel {
 	private JCalendar calendar;
 	private JLabel label;
 	private SimpleDateFormat sdf;
+	private OrdersPanel orders;
 	//TODO add a choose TODAY button
 
-	public DateChooser() {
+	public DateChooser(OrdersPanel o) {
+		orders = o;
 		sdf = new SimpleDateFormat("yyyy-MM-dd");
 		MigLayout mig = new MigLayout("wrap 3");
 
@@ -60,7 +63,9 @@ public class DateChooser extends JPanel {
 
 	private class OnDaySelected implements java.beans.PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
-			setLabel(getCalendarDate());
+			String s = getCalendarDate();
+			setLabel(s);
+			orders.setDate(s);
 		}
 	}
 

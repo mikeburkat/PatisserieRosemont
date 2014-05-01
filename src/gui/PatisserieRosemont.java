@@ -13,54 +13,53 @@ import database.DataBase;
 import date.DateChooser;
 import drivers.DriversComponent;
 
-public class PatisserieRosemont extends JTabbedPane{
-	
+public class PatisserieRosemont extends JTabbedPane {
+
 	private static final long serialVersionUID = 1L;
 	private DataBase db;
-	
+	JPanel dateChooser;
+	JPanel storeChooserPane;
+	OrdersPanel orders;
+	JComponent print;
+	JComponent reports;
+	JComponent drivers;
+
 	private PatisserieRosemont() {
-		
+
 		db = DataBase.getInstance();
 		
-		JPanel dateChooser = new DateChooser();
+		orders = new OrdersPanel();
+		dateChooser = new DateChooser(orders);
+		storeChooserPane = new StoreChooserPane(orders);
+		print = new PrintComponent();
+		reports = new ReportsComponent();
+		drivers = new DriversComponent();
+		
 		this.addTab("Data", dateChooser);
-		
-		JPanel storeChooserPane = new StoreChooserPane();
 		this.addTab("Sklep", storeChooserPane);
-		
-		JPanel orders = new OrdersPanel();
-		this.addTab("Ordery", orders);
-		
-		JComponent print = new PrintComponent();
-		this.addTab("Print", print);
-		
-		JComponent reports = new ReportsComponent();
+		this.addTab("Order", orders);
+		this.addTab("Drukuj", print);
 		this.addTab("Totaly", reports);
-		
-		JComponent drivers = new DriversComponent();
 		this.addTab("Kierowcy", drivers);
-		
-		
-		
+
 	}
 
 	private static void createAndShowGUI() {
-        JFrame frame = new JFrame("Patisserie Rosemont");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
- 
-        JTabbedPane tabbedPane = new PatisserieRosemont();
-        frame.setContentPane(tabbedPane);
- 
-        frame.pack();
-        frame.setVisible(true);
-    }
- 
-	
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
+		JFrame frame = new JFrame("Patisserie Rosemont");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		JTabbedPane tabbedPane = new PatisserieRosemont();
+		frame.setContentPane(tabbedPane);
+
+		frame.pack();
+		frame.setVisible(true);
+	}
+
+	public static void main(String[] args) {
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				createAndShowGUI();
+			}
+		});
+	}
 }
