@@ -8,6 +8,7 @@ import javax.swing.JTabbedPane;
 import orders.OrdersPanel;
 import print.PrintComponent;
 import reports.ReportsComponent;
+import stores.StoreChooserPane;
 import database.DataBase;
 import date.DateChooser;
 import drivers.DriversComponent;
@@ -23,6 +24,9 @@ public class PatisserieRosemont extends JTabbedPane{
 		
 		JPanel dateChooser = new DateChooser();
 		this.addTab("Data", dateChooser);
+		
+		JPanel storeChooserPane = new StoreChooserPane();
+		this.addTab("Sklep", storeChooserPane);
 		
 		JPanel orders = new OrdersPanel();
 		this.addTab("Ordery", orders);

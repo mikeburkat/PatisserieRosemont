@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class DataBase {
 	private static Connection connection;
@@ -28,7 +29,6 @@ public class DataBase {
 		addToOrder(1, 1, 15);
 		addToOrder(1, 2, 25);
 		
-		getStoreNames("Montreal");
 
 	}
 
@@ -103,18 +103,24 @@ public class DataBase {
 
 	}
 
-	public void getStoreNames(String city) {
+	public ArrayList<String> getStoreNames(String city) {
 		Statement statement;
+		ArrayList<String> stores = new ArrayList<String>();
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery("select * from customers where city=\""+city+"\"");
 			while (rs.next()) {
-				// read the result set
-				System.out.println("name = " + rs.getString("name"));
+				String s = rs.getString("name");
+				System.out.println(s);
+				stores.add(s);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		for (String s: stores){
+			System.out.println(s);
+		} 
+		return stores;
 	}
 
 	public void clearDB() {
