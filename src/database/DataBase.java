@@ -3,45 +3,23 @@ package database;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
 public class DataBase {
-	private Connection connection;
+	private static Connection connection;
+	private static DataBase instance;
 
 	public DataBase() {
-		// Create directory on first run
-		String rosemontDir = System.getProperty("user.home")
-				+ "/Patisserie Rosemont/";
-		File rDir = new File(rosemontDir);
-		if (!rDir.exists()) {
-			boolean succesful = rDir.mkdir();
-			if (succesful) {
-				System.out.print("Created:" + rosemontDir);
-			}
-		}
-		
-		
+		connect();
 
-		try {
-			// create a database connection
-			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection("jdbc:sqlite:"
-					+ rosemontDir + "test.db");
-
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		// clears and recreates the tables for when I was testing schema
+		// // clears and recreates the tables for when I was testing schema
 		clearDB();
 		initDB();
 		initProducts();
 		initStores();
-		
+
 		// testing the database
 		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
 		createOrder(1, "2014-04-22");
@@ -49,40 +27,46 @@ public class DataBase {
 		addProduct("bread", "chleb wieski", 3.00, "2014-04-22");
 		addToOrder(1, 1, 15);
 		addToOrder(1, 2, 25);
+		
+		getStoreNames("Montreal");
 
+	}
+
+	public static DataBase getInstance() {
+		if (instance == null) {
+			instance = new DataBase();
+		}
+		return instance;
 	}
 
 	public void addToOrder(int orderID, int productID, int quantity) {
 		Statement statement;
+		// TODO check if order exists, if it doesn't create new, before adding
+		// to order.
 		try {
 			statement = connection.createStatement();
 			statement.executeUpdate("insert into "
-					+ "orderDetails(orderID, productID, quantity) "
-					+ "values("
-					+ "'" + orderID + "', "
-					+ "'" + productID + "', "
-					+ "'" + quantity + "'"
-					+ ")");
-					
+					+ "orderDetails(orderID, productID, quantity) " + "values("
+					+ "'" + orderID + "', " + "'" + productID + "', " + "'"
+					+ quantity + "'" + ")");
+
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 		}
 	}
 
-	public void addProduct(String category, String name, double mtlPrice, String date) {
+	public void addProduct(String category, String name, double mtlPrice,
+			String date) {
 		Statement statement;
 		try {
 			statement = connection.createStatement();
-			statement.executeUpdate("insert into "
-					+ "products(category, name, montrealPrice, dateCreated, dateEffective) "
-					+ "values("
-					+ "'" + category + "', "
-					+ "'" + name + "', "
-					+ "'" + mtlPrice + "', "
-					+ "'" + date + "', "
-					+ "'" + date + "'"
-					+ ")");
-					
+			statement
+					.executeUpdate("insert into "
+							+ "products(category, name, montrealPrice, dateCreated, dateEffective) "
+							+ "values(" + "'" + category + "', " + "'" + name
+							+ "', " + "'" + mtlPrice + "', " + "'" + date
+							+ "', " + "'" + date + "'" + ")");
+
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 		}
@@ -106,19 +90,31 @@ public class DataBase {
 
 	public void createOrder(int customerID, String date) {
 		Statement statement;
+		// TODO check if order is already there, don't create a new.
 		try {
 			statement = connection.createStatement();
 			statement.executeUpdate("insert into "
-					+ "orders(customerID, orderDate) " 
-					+ "values(" 
-					+ "'" + customerID + "', " 
-					+ "'" + date + "'" 
-					+ ")");
+					+ "orders(customerID, orderDate) " + "values(" + "'"
+					+ customerID + "', " + "'" + date + "'" + ")");
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
 		}
 
+	}
+
+	public void getStoreNames(String city) {
+		Statement statement;
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select * from customers where city=\""+city+"\"");
+			while (rs.next()) {
+				// read the result set
+				System.out.println("name = " + rs.getString("name"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void clearDB() {
@@ -138,22 +134,21 @@ public class DataBase {
 		Statement statement;
 		try {
 			statement = connection.createStatement();
-			
+
 			// creates the customers table
 			statement.executeUpdate("create table customers ("
 					+ "customerID integer primary key autoincrement, "
 					+ "name varchar(100) not null, "
 					+ "city varchar(50) not null, " + "address varchar(200), "
 					+ "postalcode varchar(7), " + "phone varchar(14) " + ")");
-			
+
 			// creates the orders table
 			statement.executeUpdate("create table orders ("
 					+ "orderID integer primary key autoincrement, "
 					+ "customerID integer references customers, "
-					+ "orderDate date not null, "
-					+ "total double, "
+					+ "orderDate date not null, " + "total double, "
 					+ "paid boolean default false" + ")");
-			
+
 			// creates the products table
 			statement.executeUpdate("create table products ("
 					+ "productID integer primary key autoincrement, "
@@ -166,30 +161,52 @@ public class DataBase {
 					+ "dateCreated date not null, "
 					+ "dateEffective date not null, " + "dateEnd date, "
 					+ "dateReplaced date, " + "originalID integer" + ")");
-			
+
 			// creates the order details table
 			statement.executeUpdate("create table orderDetails ("
 					+ "orderID integer references orders, "
 					+ "productID integer references products, "
-					+ "quantity integer, " 
-					+ "subtotal double" + ")");
+					+ "quantity integer, " + "subtotal double" + ")");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void initStores() {
 		DataLoader dl = new DataLoader(this);
 		dl.importStores();
 	}
-	
+
 	public void initProducts() {
 		DataLoader dl = new DataLoader(this);
 		dl.importProducts();
 	}
-	
-	
+
+	public static void connect() {
+		// Create directory on first run
+		String rosemontDir = System.getProperty("user.home")
+				+ "/Patisserie Rosemont/";
+		File rDir = new File(rosemontDir);
+		if (!rDir.exists()) {
+			boolean succesful = rDir.mkdir();
+			if (succesful) {
+				System.out.print("Created:" + rosemontDir);
+			}
+		}
+
+		try {
+			// create a database connection
+			Class.forName("org.sqlite.JDBC");
+			connection = DriverManager.getConnection("jdbc:sqlite:"
+					+ rosemontDir + "test.db");
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void close() {
 		try {

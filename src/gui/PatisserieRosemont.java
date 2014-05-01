@@ -1,13 +1,11 @@
 package gui;
 
-import java.awt.BorderLayout;
-
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import orders.OrdersComponent;
+import orders.OrdersPanel;
 import print.PrintComponent;
 import reports.ReportsComponent;
 import database.DataBase;
@@ -21,14 +19,12 @@ public class PatisserieRosemont extends JTabbedPane{
 	
 	private PatisserieRosemont() {
 		
-		db = new DataBase();
+		db = DataBase.getInstance();
 		
-		JComponent dateChooser = new DateChooser();
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.add(dateChooser, BorderLayout.CENTER);
-		this.addTab("Data", panel);
+		JPanel dateChooser = new DateChooser();
+		this.addTab("Data", dateChooser);
 		
-		JComponent orders = new OrdersComponent();
+		JPanel orders = new OrdersPanel();
 		this.addTab("Ordery", orders);
 		
 		JComponent print = new PrintComponent();

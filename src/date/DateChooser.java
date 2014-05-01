@@ -4,20 +4,20 @@ import java.beans.PropertyChangeEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 
 import com.toedter.calendar.JCalendar;
 
-public class DateChooser extends JComponent {
+public class DateChooser extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JCalendar calendar;
 	private JLabel label;
 	private SimpleDateFormat sdf;
-	private int clicks;
+	//TODO add a choose TODAY button
 
 	public DateChooser() {
 		sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -45,7 +45,6 @@ public class DateChooser extends JComponent {
 
 		add(new JLabel(""), "cell 2 1 1 2");
 
-		clicks = 0;
 	}
 
 	private String getCalendarDate() {
@@ -55,25 +54,12 @@ public class DateChooser extends JComponent {
 	}
 
 	public void setLabel(String date) {
-		if (clicks < 2) {
-			label.setText("date not selected");
-		} else {
-			label.setText(date);
-			System.out.println(date);
-		}
-	}
-	
-	public boolean isDateSet() {
-		if (clicks < 2) {
-			return false;
-		} else {
-			return true;
-		}
+		label.setText(date);
+		System.out.println(date);
 	}
 
 	private class OnDaySelected implements java.beans.PropertyChangeListener {
 		public void propertyChange(PropertyChangeEvent evt) {
-			clicks++;
 			setLabel(getCalendarDate());
 		}
 	}
