@@ -1,8 +1,10 @@
 package stores;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -19,23 +21,21 @@ public class StoreChooser extends JPanel {
 		initStoreList(city);
 		
 		storeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		storeList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		storeList.setVisibleRowCount(-1);
 		
 		JScrollPane listScroller = new JScrollPane(storeList);
-		listScroller.setPreferredSize(new Dimension(250, 80));
+		listScroller.setPreferredSize(new Dimension(150, 200));
 		
-		this.add(listScroller);
+		this.setLayout(new BorderLayout());
+		
+		this.add(new JLabel(city), BorderLayout.NORTH);
+		this.add(listScroller, BorderLayout.CENTER);
 		
 	}
 	
 	private void initStoreList(String city){
 		db = DataBase.getInstance();
 		ArrayList<String> stores = db.getStoreNames(city);
-		for (String s: stores){
-			System.out.println(s);
-		}
-		System.out.println(stores.toString());
 		String[] storeArray = stores.toArray(new String[stores.size()]);
 		storeList = new JList(storeArray);
 	}

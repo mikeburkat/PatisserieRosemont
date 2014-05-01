@@ -111,7 +111,6 @@ public class DataBase {
 			ResultSet rs = statement.executeQuery("select * from customers where city=\""+city+"\"");
 			while (rs.next()) {
 				String s = rs.getString("name");
-				System.out.println(s);
 				stores.add(s);
 			}
 		} catch (SQLException e) {
