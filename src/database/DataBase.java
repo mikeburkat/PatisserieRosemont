@@ -15,21 +15,19 @@ public class DataBase {
 	public DataBase() {
 		connect();
 
-		// // clears and recreates the tables for when I was testing schema
-		clearDB();
-		initDB();
-		initProducts();
-		initStores();
-
-		// testing the database
-		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
-		createOrder(1, "2014-04-22");
-		addProduct("bread", "chleb zytni", 2.00, "2014-04-22");
-		addProduct("bread", "chleb wieski", 3.00, "2014-04-22");
-		addToOrder(1, 1, 15);
-		addToOrder(1, 2, 25);
-		
-
+//		// // clears and recreates the tables for when I was testing schema
+//		clearDB();
+//		initDB();
+//		initProducts();
+//		initStores();
+//
+//		// testing the database
+//		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
+//		createOrder(1, "2014-04-22");
+//		addProduct("bread", "chleb zytni", 2.00, "2014-04-22");
+//		addProduct("bread", "chleb wieski", 3.00, "2014-04-22");
+//		addToOrder(1, 1, 15);
+//		addToOrder(1, 2, 25);
 	}
 
 	public static DataBase getInstance() {
@@ -171,7 +169,7 @@ public class DataBase {
 			statement.executeUpdate("create table orderDetails ("
 					+ "orderID integer references orders, "
 					+ "productID integer references products, "
-					+ "quantity integer, " + "subtotal double" + ")");
+					+ "quantity double, " + "subtotal double" + ")");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -221,5 +219,46 @@ public class DataBase {
 			// connection close failed.
 			System.err.println(e);
 		}
+	}
+
+	public boolean isOrderDetailsPresent(String date, String store) {
+		Statement statement;
+		boolean present = false;
+		try {
+			statement = connection.createStatement();
+			
+			ResultSet rs = statement.executeQuery("select * from orders where date=\""+date+"\" and customer=\""+store+"\"");
+			while (rs.next()) {
+				String s = rs.getString("orderDate");
+				System.out.println("Here" + s);
+				present = true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return present;
+		
+	}
+
+	public ArrayList<String> getProductList() {
+		Statement statement;
+		ArrayList<String> products = new ArrayList<String>();
+		System.out.println("here");
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select * from products");
+			while (rs.next()) {
+				String p = rs.getString("name");
+				products.add(p);
+				System.out.println(p);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		for (String p: products){
+			System.out.println(p);
+		} 
+		return products;
 	}
 }
