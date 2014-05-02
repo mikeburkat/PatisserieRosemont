@@ -13,34 +13,33 @@ public class OrderModel extends AbstractTableModel {
 	private String store;
 	private OrderDetails[] orderDetails;
 	private DataBase db;
-	
-	
+	private String[] columnNames = { "Quantity", "Product Name" };
 
-	public OrderModel(String d, String s){
+	public OrderModel(String d, String s) {
 		date = d;
 		store = s;
-		
+
 		this.db = DataBase.getInstance();
 		boolean present = db.isOrderDetailsPresent(date, store);
+		System.out.println(present);
 		if (!present) {
 			createDefaultOrder();
 		}
 	}
-	
+
 	public OrderModel() {
 		this.db = DataBase.getInstance();
 		createDefaultOrder();
 	}
 
-	public void createDefaultOrder(){
+	public void createDefaultOrder() {
 		ArrayList<String> p = db.getProductList();
 		orderDetails = new OrderDetails[p.size()];
 		for (int i = 0; i < p.size(); i++) {
 			orderDetails[i] = new OrderDetails(0, p.get(i));
 		}
 	}
-	
-	
+
 	@Override
 	public int getRowCount() {
 		return orderDetails.length;
@@ -57,6 +56,20 @@ public class OrderModel extends AbstractTableModel {
 			return orderDetails[rowIndex].getQuantity();
 		} else {
 			return orderDetails[rowIndex].getProduct();
+		}
+	}
+	
+	@Override
+	public String getColumnName(int col) {
+		return columnNames[col];
+	}
+
+	@Override
+	public boolean isCellEditable(int row, int col) {
+		if (col == 0) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 

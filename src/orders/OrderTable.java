@@ -11,22 +11,24 @@ public class OrderTable extends JTable {
 	String date;
 	String store;
 	
-	public OrderTable(String d, String s) {
-		date = d;
-		store = s;
-		
-		orderModel = new OrderModel(date, store);
-		this.setModel(orderModel);
-		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		this.setCellSelectionEnabled(true);
-	}
+//	public OrderTable(String d, String s) {
+//		date = d;
+//		store = s;
+//		
+//		orderModel = new OrderModel(date, store);
+//		this.setModel(orderModel);
+//		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		this.setCellSelectionEnabled(true);
+//	}
 	
 	public OrderTable() {
-		orderModel = new OrderModel();
 		orderModel = new OrderModel(date, store);
 		this.setModel(orderModel);
 		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.setCellSelectionEnabled(true);
+		
+		this.getColumnModel().getColumn(0).setPreferredWidth(40);
+		this.getColumnModel().getColumn(1).setPreferredWidth(200);
 	}
 
 	public void update(){

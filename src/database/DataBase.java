@@ -226,11 +226,10 @@ public class DataBase {
 		boolean present = false;
 		try {
 			statement = connection.createStatement();
-			
-			ResultSet rs = statement.executeQuery("select * from orders where date=\""+date+"\" and customer=\""+store+"\"");
+			System.out.println("isOrderDetailsPresent");
+			ResultSet rs = statement.executeQuery("select * from orders where orderDate=\""+date+"\" and customerID=\""+store+"\"");
 			while (rs.next()) {
 				String s = rs.getString("orderDate");
-				System.out.println("Here" + s);
 				present = true;
 			}
 			
@@ -238,7 +237,6 @@ public class DataBase {
 			e.printStackTrace();
 		}
 		return present;
-		
 	}
 
 	public ArrayList<String> getProductList() {

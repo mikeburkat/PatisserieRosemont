@@ -1,5 +1,6 @@
 package orders;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,7 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.table.TableColumn;
 
+import orders.MyTableCellEditor;
 import net.miginfocom.swing.MigLayout;
 
 public class OrdersPanel extends JPanel{
@@ -22,8 +25,17 @@ public class OrdersPanel extends JPanel{
 		storeLabel = new JLabel("Sklep: Not chosen");
 		dateLabel = new JLabel("Data: Not chosen");
 		table = new OrderTable();
+		
+		table.setShowVerticalLines(false);
+        table.setShowHorizontalLines(true);
+        table.setGridColor(Color.BLACK);
+        
+        TableColumn col = table.getColumnModel().getColumn(0);
+        MyTableCellEditor myTableCellEditor = new MyTableCellEditor();
+        col.setCellEditor(myTableCellEditor);
+		
 		JScrollPane tableScroller = new JScrollPane(table);
-		tableScroller.setPreferredSize(new Dimension(250, 400));
+		tableScroller.setPreferredSize(new Dimension(400, 500));
 		
 		MigLayout mig = new MigLayout("wrap 4");
 		mig.setColumnConstraints("[grow][grow][grow][grow]");
@@ -32,7 +44,7 @@ public class OrdersPanel extends JPanel{
 		
 		this.add(dateLabel, "span 2, center");
 		this.add(storeLabel, "span 2, center");
-		this.add(tableScroller, "cell 0 1 4 3");
+		this.add(tableScroller, "cell 0 1 4 3, center");
 		
 	}
 
