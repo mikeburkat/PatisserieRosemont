@@ -29,10 +29,6 @@ public class OrdersPanel extends JPanel{
 		table.setShowVerticalLines(false);
         table.setShowHorizontalLines(true);
         table.setGridColor(Color.BLACK);
-        
-        TableColumn col = table.getColumnModel().getColumn(0);
-        MyTableCellEditor myTableCellEditor = new MyTableCellEditor();
-        col.setCellEditor(myTableCellEditor);
 		
 		JScrollPane tableScroller = new JScrollPane(table);
 		tableScroller.setPreferredSize(new Dimension(400, 500));

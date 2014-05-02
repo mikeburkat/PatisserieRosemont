@@ -58,7 +58,14 @@ public class OrderModel extends AbstractTableModel {
 			return orderDetails[rowIndex].getProduct();
 		}
 	}
-	
+
+	@Override
+	public void setValueAt(Object value, int row, int col) {
+		System.out.println("Value = " + value);
+		orderDetails[row].setQuantity((Double) value);
+		//fireTableCellUpdated(row, col);
+	}
+
 	@Override
 	public String getColumnName(int col) {
 		return columnNames[col];

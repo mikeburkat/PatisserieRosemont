@@ -2,6 +2,7 @@ package orders;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableColumn;
 
 public class OrderTable extends JTable {
 
@@ -11,23 +12,17 @@ public class OrderTable extends JTable {
 	String date;
 	String store;
 	
-//	public OrderTable(String d, String s) {
-//		date = d;
-//		store = s;
-//		
-//		orderModel = new OrderModel(date, store);
-//		this.setModel(orderModel);
-//		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		this.setCellSelectionEnabled(true);
-//	}
-	
 	public OrderTable() {
 		orderModel = new OrderModel(date, store);
 		this.setModel(orderModel);
 		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.setCellSelectionEnabled(true);
 		
-		this.getColumnModel().getColumn(0).setPreferredWidth(40);
+		TableColumn col = this.getColumnModel().getColumn(0);
+        MyTableCellEditor myTableCellEditor = new MyTableCellEditor();
+        col.setCellEditor(myTableCellEditor);
+		
+		this.getColumnModel().getColumn(0).setPreferredWidth(30);
 		this.getColumnModel().getColumn(1).setPreferredWidth(200);
 	}
 
@@ -35,11 +30,9 @@ public class OrderTable extends JTable {
 		orderModel = new OrderModel(date, store);
 	}
 
-
 	public void setDate(String date) {
 		this.date = date;
 	}
-
 
 	public void setStore(String store) {
 		this.store = store;
