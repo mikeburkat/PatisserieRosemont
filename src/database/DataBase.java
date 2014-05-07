@@ -259,4 +259,9 @@ public class DataBase {
 		} 
 		return products;
 	}
+
+	public void addToOrder(double quantity, String product, String date, String store) {
+		System.out.println("MODIFY DB INSERT TO INSERT TO ORDER");
+		// TODO finish this
+	}
 }

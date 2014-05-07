@@ -63,7 +63,7 @@ public class OrderModel extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int col) {
 		System.out.println("Value = " + value);
 		orderDetails[row].setQuantity((Double) value);
-		//fireTableCellUpdated(row, col);
+		db.addToOrder(orderDetails[row].getQuantity(), orderDetails[row].getProduct(), date, store);
 	}
 
 	@Override
