@@ -31,7 +31,7 @@ public class OrdersPanel extends JPanel{
         table.setGridColor(Color.BLACK);
 		
 		JScrollPane tableScroller = new JScrollPane(table);
-		tableScroller.setPreferredSize(new Dimension(400, 500));
+		tableScroller.setPreferredSize(new Dimension(500, 700));
 		
 		MigLayout mig = new MigLayout("wrap 4");
 		mig.setColumnConstraints("[grow][grow][grow][grow]");

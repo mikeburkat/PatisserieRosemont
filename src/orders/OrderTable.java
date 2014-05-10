@@ -15,8 +15,6 @@ public class OrderTable extends JTable {
 	public OrderTable() {
 		update();
 		
-		this.getColumnModel().getColumn(0).setPreferredWidth(30);
-		this.getColumnModel().getColumn(1).setPreferredWidth(200);
 	}
 
 	public void update(){
@@ -28,6 +26,8 @@ public class OrderTable extends JTable {
 		TableColumn col = this.getColumnModel().getColumn(0);
         MyTableCellEditor myTableCellEditor = new MyTableCellEditor();
         col.setCellEditor(myTableCellEditor);
+        this.getColumnModel().getColumn(0).setPreferredWidth(50);
+		this.getColumnModel().getColumn(1).setPreferredWidth(300);
 	}
 
 	public void setDate(String date) {

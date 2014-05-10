@@ -19,13 +19,6 @@ public class DataBase {
 	public DataBase() {
 		connect();
 		
-		init = new DataInitialization(this, connection);
-//		// // clears and recreates the tables for when I was testing schema
-//		init.clearDB();
-//		init.initDB();
-//		init.initProducts();
-//		init.initStores();
-//
 //		// testing the database
 //		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
 //		createOrder(1, "2014-04-22");
@@ -40,6 +33,15 @@ public class DataBase {
 			instance = new DataBase();
 		}
 		return instance;
+	}
+	
+	public void init() {
+		init = new DataInitialization(this, connection);
+		// // clears and recreates the tables
+		init.clearDB();
+		init.initDB();
+		init.initProducts();
+		init.initStores();
 	}
 	
 	public void createOrder(String store, String date) {

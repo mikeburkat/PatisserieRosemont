@@ -29,7 +29,7 @@ public class StoreChooser extends JPanel {
 		storeList.setVisibleRowCount(-1);
 
 		JScrollPane listScroller = new JScrollPane(storeList);
-		listScroller.setPreferredSize(new Dimension(190, 300));
+		listScroller.setPreferredSize(new Dimension(190, 400));
 
 		this.setLayout(new BorderLayout());
 
