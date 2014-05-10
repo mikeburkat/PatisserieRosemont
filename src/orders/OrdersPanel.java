@@ -52,14 +52,14 @@ public class OrdersPanel extends JPanel implements ActionListener{
 		tableScroller = new JScrollPane(table);
 		tableScroller.setPreferredSize(new Dimension(500, 700));
 		
-		MigLayout mig = new MigLayout("wrap 4");
-		mig.setColumnConstraints("[grow][grow][grow][grow]");
+		MigLayout mig = new MigLayout("wrap 5");
+		mig.setColumnConstraints("[grow][grow][grow][grow][grow]");
 		mig.setRowConstraints("[30]20[grow][grow][grow]30");
 		this.setLayout(mig);
 		
-		this.add(dateLabel, "span 2, center");
+		this.add(dateLabel, "span 3, center");
 		this.add(storeLabel, "span 2, center");
-		this.add(tableScroller, "cell 0 1 4 3, center");
+		this.add(tableScroller, "cell 0 1 5 3, center");
 		this.add(normal, "center");
 		this.add(toTop, "center");
 		this.add(lastWeek, "center");
@@ -79,9 +79,6 @@ public class OrdersPanel extends JPanel implements ActionListener{
 		table.setStore(s);
 		table.update();
 	}
-
-
-
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -111,8 +108,6 @@ public class OrdersPanel extends JPanel implements ActionListener{
 		table.repaint();
 		tableScroller.getViewport().setViewPosition(new Point(0,0));
 			
-			
-		
 	}
 	
 
