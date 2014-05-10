@@ -8,18 +8,23 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import orders.OrderDetails;
+
 public class DataBase {
 	private static Connection connection;
 	private static DataBase instance;
+	private DataInitialization init;
+	Statement statement;
 
 	public DataBase() {
 		connect();
-
+		
+		init = new DataInitialization(this, connection);
 //		// // clears and recreates the tables for when I was testing schema
-//		clearDB();
-//		initDB();
-//		initProducts();
-//		initStores();
+//		init.clearDB();
+//		init.initDB();
+//		init.initProducts();
+//		init.initStores();
 //
 //		// testing the database
 //		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
@@ -36,17 +41,85 @@ public class DataBase {
 		}
 		return instance;
 	}
-
-	public void addToOrder(int orderID, int productID, int quantity) {
+	
+	public void createOrder(String store, String date) {
 		Statement statement;
-		// TODO check if order exists, if it doesn't create new, before adding
-		// to order.
+		String customerID = getCustomerID(store);
+		System.out.println("insert into "
+					+ "orders(customerID, orderDate) " + "values(" + "'"
+					+ customerID + "', " + "'" + date + "'" + ")");
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate("insert into "
+					+ "orders(customerID, orderDate) " + "values(" + "'"
+					+ customerID + "', " + "'" + date + "'" + ")");
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+		
+	}
+	
+	public String getOrderID(String store, String date) {
+		String orderID = "";
+		String customerID = getCustomerID(store);
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select * from orders where orderDate=\""+date+"\" and customerID=\""+customerID+"\"");
+			while (rs.next()) {
+				orderID = rs.getString("orderID");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	
+		return orderID;
+	}
+
+	private void addToOrder(String orderID, String productID, double quantity) {
 		try {
 			statement = connection.createStatement();
 			statement.executeUpdate("insert into "
 					+ "orderDetails(orderID, productID, quantity) " + "values("
 					+ "'" + orderID + "', " + "'" + productID + "', " + "'"
 					+ quantity + "'" + ")");
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	public void addToOrder(double quantity, String product, String date, String store) {
+		boolean oExists = isOrderPresent(date, store); // check if order exists
+		System.out.println("exists " + oExists);
+		String productID = getProductID(product);
+		System.out.println("pID " + productID);
+		if (!oExists) {
+			createOrder(store, date);
+		}
+		String orderID = getOrderID(store, date);
+		System.out.println("orderID " + orderID);
+		
+		boolean pExists = isProductPresent(orderID, productID);
+		if (!pExists) {
+			addToOrder(orderID, productID, quantity);
+			System.out.println("product was not found, adding new");
+		} else {
+			modifyOrder(orderID, productID, quantity);
+			System.out.println("product was found, modifying");
+		}
+	}
+
+	private void modifyOrder(String orderID, String productID, double quantity) {
+		try {
+			statement = connection.createStatement();
+			
+			System.out.println("update orderDetails set quantity='" + quantity + "' "
+					+ "where orderID='" + orderID + "' and where productID='" + productID + "'");
+			
+			statement.executeUpdate("update orderDetails set quantity='" + quantity + "' "
+					+ "where orderID='" + orderID + "' and productID='" + productID + "'");
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
@@ -69,10 +142,38 @@ public class DataBase {
 			System.err.println(e.getMessage());
 		}
 	}
+	
+	public String getProductID(String product) {
+		String ProductID = "";
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select * from products where name=\""+product+"\"");
+			while (rs.next()) {
+				ProductID = rs.getString("productID");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println(ProductID);
+		return ProductID;
+	}
+	
+	private String getProductName(String pID) {
+		String name = "";
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select * from products where productID=\""+pID+"\"");
+			while (rs.next()) {
+				name = rs.getString("name");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return name;
+	}
 
 	public void addCustomer(String name, String city, String address,
 			String postal, String phone) {
-		Statement statement;
 		try {
 			statement = connection.createStatement();
 			statement.executeUpdate("insert into "
@@ -85,24 +186,23 @@ public class DataBase {
 			System.err.println(e.getMessage());
 		}
 	}
-
-	public void createOrder(int customerID, String date) {
-		Statement statement;
-		// TODO check if order is already there, don't create a new.
+	
+	public String getCustomerID(String store) {
+		String customerID = "";
 		try {
 			statement = connection.createStatement();
-			statement.executeUpdate("insert into "
-					+ "orders(customerID, orderDate) " + "values(" + "'"
-					+ customerID + "', " + "'" + date + "'" + ")");
-
+			ResultSet rs = statement.executeQuery("select * from customers where name=\""+store+"\"");
+			while (rs.next()) {
+				customerID = rs.getString("customerID");
+			}
 		} catch (SQLException e) {
-			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
-
+		System.out.println(customerID);
+		return customerID;
 	}
 
 	public ArrayList<String> getStoreNames(String city) {
-		Statement statement;
 		ArrayList<String> stores = new ArrayList<String>();
 		try {
 			statement = connection.createStatement();
@@ -120,71 +220,6 @@ public class DataBase {
 		return stores;
 	}
 
-	public void clearDB() {
-		Statement statement;
-		try {
-			statement = connection.createStatement();
-			statement.executeUpdate("drop table if exists customers");
-			statement.executeUpdate("drop table if exists orders");
-			statement.executeUpdate("drop table if exists orderDetails");
-			statement.executeUpdate("drop table if exists products");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void initDB() {
-		Statement statement;
-		try {
-			statement = connection.createStatement();
-
-			// creates the customers table
-			statement.executeUpdate("create table customers ("
-					+ "customerID integer primary key autoincrement, "
-					+ "name varchar(100) not null, "
-					+ "city varchar(50) not null, " + "address varchar(200), "
-					+ "postalcode varchar(7), " + "phone varchar(14) " + ")");
-
-			// creates the orders table
-			statement.executeUpdate("create table orders ("
-					+ "orderID integer primary key autoincrement, "
-					+ "customerID integer references customers, "
-					+ "orderDate date not null, " + "total double, "
-					+ "paid boolean default false" + ")");
-
-			// creates the products table
-			statement.executeUpdate("create table products ("
-					+ "productID integer primary key autoincrement, "
-					+ "name varchar(75) not null, "
-					+ "category varchar(50) not null, "
-					+ "montrealPrice double, " + "ottawaPrice double, "
-					+ "kosciolPrice double, " + "krazyKrisPrice double, "
-					+ "cecilPrice double, " + "rosemontStorePrice double, "
-					+ "updated boolean default false, "
-					+ "dateCreated date not null, "
-					+ "dateEffective date not null, " + "dateEnd date, "
-					+ "dateReplaced date, " + "originalID integer" + ")");
-
-			// creates the order details table
-			statement.executeUpdate("create table orderDetails ("
-					+ "orderID integer references orders, "
-					+ "productID integer references products, "
-					+ "quantity double, " + "subtotal double" + ")");
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void initStores() {
-		DataLoader dl = new DataLoader(this);
-		dl.importStores();
-	}
-
-	public void initProducts() {
-		DataLoader dl = new DataLoader(this);
-		dl.importProducts();
-	}
 
 	public static void connect() {
 		// Create directory on first run
@@ -221,15 +256,14 @@ public class DataBase {
 		}
 	}
 
-	public boolean isOrderDetailsPresent(String date, String store) {
-		Statement statement;
+	public boolean isOrderPresent(String date, String store) {
+		String customerID = getCustomerID(store);
 		boolean present = false;
 		try {
 			statement = connection.createStatement();
-			System.out.println("isOrderDetailsPresent");
-			ResultSet rs = statement.executeQuery("select * from orders where orderDate=\""+date+"\" and customerID=\""+store+"\"");
+			System.out.println("isOrderPresent");
+			ResultSet rs = statement.executeQuery("select * from orders where orderDate=\""+date+"\" and customerID=\""+customerID+"\"");
 			while (rs.next()) {
-				String s = rs.getString("orderDate");
 				present = true;
 			}
 			
@@ -238,6 +272,23 @@ public class DataBase {
 		}
 		return present;
 	}
+	
+	public boolean isProductPresent(String orderID, String productID) {
+		boolean present = false;
+		try {
+			statement = connection.createStatement();
+			System.out.println("isOrderPresent");
+			ResultSet rs = statement.executeQuery("select * from orderDetails where orderID=\""+orderID+"\" and productID=\""+productID+"\"");
+			while (rs.next()) {
+				present = true;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return present;
+	}
+	
 
 	public ArrayList<String> getProductList() {
 		Statement statement;
@@ -249,7 +300,6 @@ public class DataBase {
 			while (rs.next()) {
 				String p = rs.getString("name");
 				products.add(p);
-				System.out.println(p);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -260,8 +310,48 @@ public class DataBase {
 		return products;
 	}
 
-	public void addToOrder(double quantity, String product, String date, String store) {
-		System.out.println("MODIFY DB INSERT TO INSERT TO ORDER");
-		// TODO finish this
+
+	public ArrayList<String> getOrdersList(String date) {
+		ArrayList<String> stores = new ArrayList<String>();
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select * from orders where orderDate=\""+date+"\"");
+			while (rs.next()) {
+				String s = rs.getString("customerID");
+				stores.add(s);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		for (String s: stores){
+			System.out.println(s);
+		} 
+		return stores;
 	}
+
+	public ArrayList<OrderDetails> getOrderDetails(String store, String date) {
+		String orderID = getOrderID(store, date);
+		ArrayList<OrderDetails> od = new ArrayList<OrderDetails>();
+		
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery("select * from orderDetails where orderID=\""+orderID+"\"");
+			while (rs.next()) {
+				
+				String pID = rs.getString("productID");
+				String pName = getProductName(pID);
+				String q = rs.getString("quantity");
+				Double qd = Double.parseDouble(q);
+				
+				System.out.println("pID " + pID + " q " + q);
+				od.add(new OrderDetails(qd, pName));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return od;
+	}
+
+	
 }

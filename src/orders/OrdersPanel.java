@@ -46,13 +46,17 @@ public class OrdersPanel extends JPanel{
 
 	
 	
+	
 	public void setDate(String d) {
 		dateLabel.setText("Data: " + d);
-		
+		table.setDate(d);
+		table.update();
 	}
 	
 	public void setStore(String s) {
 		storeLabel.setText("Sklep: " + s);
+		table.setStore(s);
+		table.update();
 	}
 	
 

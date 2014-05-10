@@ -13,6 +13,13 @@ public class OrderTable extends JTable {
 	String store;
 	
 	public OrderTable() {
+		update();
+		
+		this.getColumnModel().getColumn(0).setPreferredWidth(30);
+		this.getColumnModel().getColumn(1).setPreferredWidth(200);
+	}
+
+	public void update(){
 		orderModel = new OrderModel(date, store);
 		this.setModel(orderModel);
 		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -21,13 +28,6 @@ public class OrderTable extends JTable {
 		TableColumn col = this.getColumnModel().getColumn(0);
         MyTableCellEditor myTableCellEditor = new MyTableCellEditor();
         col.setCellEditor(myTableCellEditor);
-		
-		this.getColumnModel().getColumn(0).setPreferredWidth(30);
-		this.getColumnModel().getColumn(1).setPreferredWidth(200);
-	}
-
-	public void update(){
-		orderModel = new OrderModel(date, store);
 	}
 
 	public void setDate(String date) {

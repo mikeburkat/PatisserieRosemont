@@ -1,39 +1,42 @@
 package gui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import orders.OrdersPanel;
-import print.PrintComponent;
-import reports.ReportsComponent;
+import print.PrintPanel;
+import reports.ReportsPanel;
 import stores.StoreChooserPane;
 import database.DataBase;
 import date.DateChooser;
-import drivers.DriversComponent;
+import drivers.DriversPanel;
 
 public class PatisserieRosemont extends JTabbedPane {
 
 	private static final long serialVersionUID = 1L;
 	private DataBase db;
-	JPanel dateChooser;
-	JPanel storeChooserPane;
-	OrdersPanel orders;
-	JComponent print;
-	JComponent reports;
-	JComponent drivers;
+	private JPanel dateChooser;
+	private JPanel storeChooserPane;
+	private OrdersPanel orders;
+	private PrintPanel print;
+	private ReportsPanel reports;
+	private DriversPanel drivers;
 
 	private PatisserieRosemont() {
 
 		db = DataBase.getInstance();
 		
 		orders = new OrdersPanel();
-		dateChooser = new DateChooser(orders);
 		storeChooserPane = new StoreChooserPane(orders);
-		print = new PrintComponent();
-		reports = new ReportsComponent();
-		drivers = new DriversComponent();
+		print = new PrintPanel();
+		reports = new ReportsPanel();
+		drivers = new DriversPanel();
+		dateChooser = new DateChooser(orders, print, reports, drivers);
 		
 		this.addTab("Data", dateChooser);
 		this.addTab("Sklep", storeChooserPane);

@@ -20,9 +20,12 @@ public class OrderModel extends AbstractTableModel {
 		store = s;
 
 		this.db = DataBase.getInstance();
-		boolean present = db.isOrderDetailsPresent(date, store);
+		boolean present = db.isOrderPresent(date, store);
 		System.out.println(present);
-		if (!present) {
+		if (present) {
+			createDefaultOrder();
+			retrieveOrder();
+		} else {
 			createDefaultOrder();
 		}
 	}
@@ -38,6 +41,27 @@ public class OrderModel extends AbstractTableModel {
 		for (int i = 0; i < p.size(); i++) {
 			orderDetails[i] = new OrderDetails(0, p.get(i));
 		}
+	}
+	
+	public void retrieveOrder() {
+		ArrayList<OrderDetails> od = db.getOrderDetails(store, date);
+		
+		for (OrderDetails o : od) {
+			System.out.println(store +" "+ date +" "+ o.getQuantity()+" "+ o.getProduct());
+			int i = getIndexOf(o.getProduct());
+			//setValueAt(o.getQuantity(), i, 0);
+			orderDetails[i].setQuantity(o.getQuantity());
+		}
+		
+	}
+	
+	public int getIndexOf(String product){
+		for (int i = 0; i < orderDetails.length; i++) {
+			if (product.equals( orderDetails[i].getProduct() ) ) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	@Override
@@ -62,7 +86,7 @@ public class OrderModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object value, int row, int col) {
 		System.out.println("Value = " + value);
-		orderDetails[row].setQuantity((Double) value);
+		orderDetails[row].setQuantity((Double)value);
 		db.addToOrder(orderDetails[row].getQuantity(), orderDetails[row].getProduct(), date, store);
 	}
 
