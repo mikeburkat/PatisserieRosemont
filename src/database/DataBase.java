@@ -107,9 +107,27 @@ public class DataBase {
 		if (!pExists) {
 			addToOrder(orderID, productID, quantity);
 			System.out.println("product was not found, adding new");
+		} else if (quantity == 0.0){
+			deleteFromOrder(orderID, productID);
+			System.out.println("product was found, deleting");
 		} else {
 			modifyOrder(orderID, productID, quantity);
 			System.out.println("product was found, modifying");
+		}
+	}
+
+	private void deleteFromOrder(String orderID, String productID) {
+		try {
+			statement = connection.createStatement();
+			
+			System.out.println("delete from orderDetails where orderID='"
+							+ orderID + "' and productID='" + productID + "'");
+			
+			statement.executeUpdate("delete from orderDetails where orderID='"
+							+ orderID + "' and productID='" + productID + "'");
+
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
 		}
 	}
 

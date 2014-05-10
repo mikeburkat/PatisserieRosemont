@@ -1,5 +1,7 @@
 package orders;
 
+import java.awt.Color;
+
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
@@ -23,6 +25,10 @@ public class OrderTable extends JTable {
 		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.setCellSelectionEnabled(true);
 		
+		this.setShowVerticalLines(false);
+		this.setShowHorizontalLines(true);
+		this.setGridColor(Color.BLACK);
+		
 		TableColumn col = this.getColumnModel().getColumn(0);
         MyTableCellEditor myTableCellEditor = new MyTableCellEditor();
         col.setCellEditor(myTableCellEditor);
@@ -37,5 +43,22 @@ public class OrderTable extends JTable {
 	public void setStore(String store) {
 		this.store = store;
 	}
+
+	public void pushToTop() {
+		orderModel.pushToTop();
+	}
+
+	public void sameAsLastWeek() {
+		orderModel.sameAsLastWeek();
+	}
+
+	public void heuristic() {
+		orderModel.heuristic();
+	}
+
+	public void clear() {
+		orderModel.clear();
+	}
+
 
 }

@@ -36,10 +36,10 @@ public class OrderModel extends AbstractTableModel {
 	}
 
 	public void createDefaultOrder() {
-		ArrayList<String> p = db.getProductList();
-		orderDetails = new OrderDetails[p.size()];
-		for (int i = 0; i < p.size(); i++) {
-			orderDetails[i] = new OrderDetails(0, p.get(i));
+		ArrayList<String> pList = db.getProductList();
+		orderDetails = new OrderDetails[pList.size()];
+		for (int i = 0; i < pList.size(); i++) {
+			orderDetails[i] = new OrderDetails(0, pList.get(i));
 		}
 	}
 	
@@ -101,6 +101,42 @@ public class OrderModel extends AbstractTableModel {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	public void pushToTop() {
+		ArrayList<OrderDetails> od = new ArrayList<OrderDetails>();
+		for (OrderDetails o : orderDetails){
+			if (o.getQuantity() != 0.0) {
+				od.add(o);
+			}
+		}
+		for (OrderDetails o : orderDetails){
+			if (o.getQuantity() == 0.0) {
+				od.add(o);
+			}
+		}
+		
+		for (int i = 0; i < od.size(); i++) {
+			orderDetails[i] = new OrderDetails(od.get(i).getQuantity(), od.get(i).getProduct());
+		}
+	}
+
+	public void sameAsLastWeek() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void heuristic() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void clear() {
+		for (int i = 0; i < orderDetails.length; i++) {
+			if (orderDetails[i].getQuantity() != 0.0) {
+				setValueAt(0.0, i, 0);
+			}
 		}
 	}
 
