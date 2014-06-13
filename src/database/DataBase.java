@@ -39,9 +39,10 @@ public class DataBase {
 		init = new DataInitialization(this, connection);
 		// // clears and recreates the tables
 		init.clearDB();
-		init.initDB();
-		init.initProducts();
-		init.initStores();
+//		init.initDB();
+		init.initNewDB();
+//		init.initProducts();
+//		init.initStores();
 	}
 	
 	public void createOrder(String store, String date) {
@@ -282,7 +283,8 @@ public class DataBase {
 		try {
 			statement = connection.createStatement();
 			System.out.println("isOrderPresent");
-			ResultSet rs = statement.executeQuery("select * from orders where orderDate=\""+date+"\" and customerID=\""+customerID+"\"");
+			ResultSet rs = statement.executeQuery(""
+					+ "select * from orders where orderDate=\""+date+"\" and customerID=\""+customerID+"\"");
 			while (rs.next()) {
 				present = true;
 			}
