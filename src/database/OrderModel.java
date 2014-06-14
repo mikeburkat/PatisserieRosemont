@@ -17,12 +17,12 @@ public class OrderModel {
 	public void createOrder(String store, String date) {
 		Statement statement;
 		
-		String insert = ("begin transaction; "
+		String insert = "begin transaction; "
 				+ "insert into orders(total) values(0.0); "
 				+ "insert into placed_order(cid, oid, order_date) "
 					+ "values((select cid from customers where name='"+store+"'), "
 					+ "last_insert_rowid(), '"+ date +"'); "
-				+ "commit;");
+				+ "commit;";
 		
 		try {
 			statement = connection.createStatement();
@@ -36,10 +36,14 @@ public class OrderModel {
 	
 	public String getOrderID(String store, String date) {
 		String orderID = "";
-		String customerID = getCustomerID(store);
+		
+		String getID = "select oid from placed_order "
+						+ "where cid=(select cid from customers where name='" +store+ "') "
+						+ "and order_date='" +date+ "'";
+		
 		try {
 			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select * from orders where orderDate=\""+date+"\" and customerID=\""+customerID+"\"");
+			ResultSet rs = statement.executeQuery(getID);
 			while (rs.next()) {
 				orderID = rs.getString("orderID");
 			}
