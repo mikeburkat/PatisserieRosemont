@@ -14,18 +14,18 @@ public class DataBase {
 	private static Connection connection;
 	private static DataBase instance;
 	private DataInitialization init;
-	Statement statement;
+	private Statement statement;
+	
+	private OrderModel orderModel;
+	private CustomerModel customerModel;
+	private ProductModel productModel;
 
-	public DataBase() {
+	private DataBase() {
 		connect();
+		orderModel = new OrderModel(connection);
+		customerModel = new CustomerModel(connection);
+		productModel = new ProductModel(connection);
 		
-//		// testing the database
-//		addCustomer("mike", "monteral", "xxx boul", "t4w 4t4", "(412)-312-5675");
-//		createOrder(1, "2014-04-22");
-//		addProduct("bread", "chleb zytni", 2.00, "2014-04-22");
-//		addProduct("bread", "chleb wieski", 3.00, "2014-04-22");
-//		addToOrder(1, 1, 15);
-//		addToOrder(1, 2, 25);
 	}
 
 	public static DataBase getInstance() {

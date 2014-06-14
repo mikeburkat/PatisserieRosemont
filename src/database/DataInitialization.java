@@ -79,7 +79,7 @@ public class DataInitialization {
 			statement.executeUpdate("CREATE TABLE placed_order ( "
 					+ "cid  INTEGER NOT NULL REFERENCES customers ( cid ), "
 					+ "oid  INTEGER NOT NULL REFERENCES orders ( oid ), "
-					+ "order_date DATE    NOT NULL );");
+					+ "order_date DATE NOT NULL );");
 
 			statement.executeUpdate("CREATE TABLE products ( "
 							+ "pid            INTEGER           PRIMARY KEY ASC AUTOINCREMENT NOT NULL, "
@@ -101,7 +101,7 @@ public class DataInitialization {
 					+ "oid       INTEGER NOT NULL REFERENCES orders ( oid ), "
 					+ "pid       INTEGER NOT NULL REFERENCES products ( pid ), "
 					+ "quantity  REAL    NOT NULL DEFAULT ( 0.0 ), "
-					+ "qub_total REAL    NOT NULL DEFAULT ( 0.0 ));");
+					+ "sub_total REAL    NOT NULL DEFAULT ( 0.0 ));");
 
 		} catch (SQLException e) {
 			e.printStackTrace();

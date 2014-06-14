@@ -14,14 +14,13 @@ CREATE TABLE placed_order (
                  REFERENCES customer ( cid ),
     oid  INTEGER NOT NULL
                  REFERENCES orders ( oid ),
-    date DATE    NOT NULL 
+    order_date DATE    NOT NULL 
 );
 
 CREATE TABLE orders ( 
     oid         INTEGER PRIMARY KEY ASC AUTOINCREMENT
                         NOT NULL,
-    total       REAL    NOT NULL
-                        DEFAULT ( 0.0 ),
+    total       REAL    NOT NULL DEFAULT ( 0.0 ),
     paid_status BOOLEAN NOT NULL
                         DEFAULT ( 0 ) 
 );
