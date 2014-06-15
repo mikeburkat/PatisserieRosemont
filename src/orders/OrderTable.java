@@ -11,8 +11,8 @@ public class OrderTable extends JTable {
 	private static final long serialVersionUID = 1L;
 	
 	private OrderModel orderModel;
-	String date;
-	String store;
+	String date = null;
+	String store = null;
 	
 	public OrderTable() {
 		update();

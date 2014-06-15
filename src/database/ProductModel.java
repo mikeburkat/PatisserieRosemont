@@ -12,14 +12,14 @@ public class ProductModel {
 	private Connection connection;
 	private Statement statement;
 
-	public ProductModel(DataBase db, Connection conn) {
-		database = db;
+	public ProductModel(Connection conn) {
+		database = DataBase.getInstance();
 		connection = conn;
 	}
 	
 	public boolean isProductPresent(String orderID, String productID) {
 		boolean present = false;
-		String query = "select * from orderDetails where oid='"+orderID+"' and pid='"+productID+"'";
+		String query = "select * from contained where oid='"+orderID+"' and pid='"+productID+"'";
 		try {
 			statement = connection.createStatement();
 			System.out.println("isOrderPresent");

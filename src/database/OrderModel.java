@@ -14,16 +14,19 @@ public class OrderModel {
 	private Statement statement;
 	private DataBase database;
 	
-	public OrderModel(DataBase db, Connection conn) {
+	public OrderModel(Connection conn) {
 		connection = conn;
-		database = db;
+		database = DataBase.getInstance();
 	}
 	
 	public boolean isOrderPresent(String date, String store) {
 		boolean present = false;
+		if (date == null || store == null) return false;
+		System.out.println("isOrderPresent: "+store);
 		String customerID = database.getCustomerID(store);
+		
 		String query = "select oid from placed_order "
-						+ "where orderDate='"+date+"' and cid='"+customerID+"'";
+						+ "where order_date='"+date+"' and cid='"+customerID+"'";
 		try {
 			statement = connection.createStatement();
 			System.out.println("isOrderPresent");
@@ -67,7 +70,7 @@ public class OrderModel {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery(getID);
 			while (rs.next()) {
-				orderID = rs.getString("orderID");
+				orderID = rs.getString("oid");
 			}
 			
 		} catch (SQLException e) {
@@ -102,7 +105,7 @@ public class OrderModel {
 	}
 	
 	private void addProductToOrder(String orderID, String productID, double quantity) {
-		String query = "insert into orderDetails(oid, pid, quantity) " 
+		String query = "insert into contained(oid, pid, quantity) " 
 						+ "values('" + orderID + "', '" + productID + "', '" + quantity + "'" + ")";
 		System.out.println(query);
 		try {
@@ -144,7 +147,7 @@ public class OrderModel {
 		ArrayList<String> stores = new ArrayList<String>();
 		try {
 			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select cid from orders where order_date='"+date+"'");
+			ResultSet rs = statement.executeQuery("select cid from placed_order where order_date='"+date+"'");
 			while (rs.next()) {
 				String s = rs.getString("cid");
 				stores.add(s);
@@ -161,14 +164,14 @@ public class OrderModel {
 	public ArrayList<OrderDetails> getOrderDetails(String store, String date) {
 		String orderID = getOrderID(store, date);
 		ArrayList<OrderDetails> od = new ArrayList<OrderDetails>();
-		String query = "select * from order "
+		String query = "select * from contained "
 						+ "where oid='" + orderID + "'";
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery(query);
 			while (rs.next()) {
 
-				String pID = rs.getString("productID");
+				String pID = rs.getString("pid");
 				String pName = database.getProductName(pID);
 				String q = rs.getString("quantity");
 				Double qd = Double.parseDouble(q);

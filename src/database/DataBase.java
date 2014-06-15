@@ -22,9 +22,10 @@ public class DataBase {
 
 	private DataBase() {
 		connect();
-		orderModel = new OrderModel(instance, connection);
-		customerModel = new CustomerModel(instance, connection);
-		productModel = new ProductModel(instance, connection);
+		instance = this;
+		orderModel = new OrderModel(connection);
+		customerModel = new CustomerModel(connection);
+		productModel = new ProductModel(connection);
 	}
 
 	public static DataBase getInstance() {
@@ -40,6 +41,11 @@ public class DataBase {
 		init.clearDB();
 //		init.initDB();
 		init.initNewDB();
+		init.runScript("random_customers.sql");
+		init.runScript("random_products.sql");
+		init.runScript("random_order.sql");
+		init.runScript("random_placed_order.sql");
+		init.runScript("random_contained.sql");
 //		init.initProducts();
 //		init.initStores();
 	}

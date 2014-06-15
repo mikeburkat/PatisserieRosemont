@@ -12,8 +12,8 @@ public class CustomerModel {
 	private Connection connection;
 	private Statement statement;
 	
-	public CustomerModel(DataBase db, Connection conn) {
-		database = db;
+	public CustomerModel(Connection conn) {
+		database = DataBase.getInstance();
 		connection = conn;
 	}
 	
