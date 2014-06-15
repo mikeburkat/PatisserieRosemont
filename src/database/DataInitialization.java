@@ -74,12 +74,16 @@ public class DataInitialization {
 			statement.executeUpdate("CREATE TABLE orders ( "
 							+ "oid         INTEGER PRIMARY KEY ASC AUTOINCREMENT NOT NULL, "
 							+ "total       REAL    NOT NULL DEFAULT ( 0.0 ), "
-							+ "paid_status BOOLEAN NOT NULL DEFAULT ( 0 ) );");
+							+ "paid_status BOOLEAN NOT NULL DEFAULT ( 0 ), "
+							+ "CONSTRAINT 'prim_key_contained' PRIMARY KEY ( oid ASC, pid ASC ), "
+							+ "CONSTRAINT 'uniq_product_per_order' UNIQUE ( oid ASC, pid ASC ));");
 
 			statement.executeUpdate("CREATE TABLE placed_order ( "
-					+ "cid  INTEGER NOT NULL REFERENCES customers ( cid ), "
-					+ "oid  INTEGER NOT NULL REFERENCES orders ( oid ), "
-					+ "order_date DATE NOT NULL );");
+					+ "cid  INTEGER NOT NULL REFERENCES customers ( cid ) ON DELETE NO ACTION, "
+					+ "oid  INTEGER NOT NULL UNIQUE ON CONFLICT IGNORE REFERENCES orders ( oid ) ON DELETE NO ACTION, "
+					+ "order_date DATE NOT NULL, "
+					+ "CONSTRAINT 'prim_key' PRIMARY KEY ( cid ASC, order_date ASC )  ON CONFLICT IGNORE, "
+					+ "CONSTRAINT 'uniq_prim_key' UNIQUE ( cid ASC, order_date ASC )  ON CONFLICT IGNORE);");
 
 			statement.executeUpdate("CREATE TABLE products ( "
 							+ "pid            INTEGER           PRIMARY KEY ASC AUTOINCREMENT NOT NULL, "
@@ -98,8 +102,8 @@ public class DataInitialization {
 							+ "original_id    INTEGER );");
 			
 			statement.executeUpdate("CREATE TABLE contained (  "
-					+ "oid       INTEGER NOT NULL REFERENCES orders ( oid ), "
-					+ "pid       INTEGER NOT NULL REFERENCES products ( pid ), "
+					+ "oid       INTEGER NOT NULL REFERENCES orders ( oid ) ON DELETE NO ACTION, "
+					+ "pid       INTEGER NOT NULL REFERENCES products ( pid ) ON DELETE NO ACTION, "
 					+ "quantity  REAL    NOT NULL DEFAULT ( 0.0 ), "
 					+ "sub_total REAL    NOT NULL DEFAULT ( 0.0 ));");
 
