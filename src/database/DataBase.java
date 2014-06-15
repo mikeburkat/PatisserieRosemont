@@ -37,10 +37,11 @@ public class DataBase {
 	
 	public void init() {
 		init = new DataInitialization(this, connection);
-		// // clears and recreates the tables
-		init.clearDB();
-//		init.initDB();
-		init.initNewDB();
+		
+		init.clearDB(); // clears and recreates the tables
+		init.runScript("DB_schema.sql"); // init the database schema
+		
+		// Load random datasets for testing.
 		init.runScript("random_customers.sql");
 		init.runScript("random_products.sql");
 		init.runScript("random_order.sql");
