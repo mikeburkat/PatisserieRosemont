@@ -24,14 +24,19 @@ public class OrdersPanel extends JPanel implements ActionListener{
 	JScrollPane tableScroller;
 	private JButton toTop;
 	private JButton lastWeek;
+	private JButton lastWeekCopy;
 	private JButton heuristic;
+	private JButton alphabetical;
 	private JButton clear;
 	private JButton normal;
-	private final String TOTOP = "to top";
-	private final String LASTWEEK = "last week";
-	private final String HEURISTIC = "most probable";
-	private final String CLEAR = "clear";
 	private final String NORMAL = "normal";
+	private final String TOTOP = "to top";
+	private final String LASTWEEK = "last week look";
+	private final String LASTWEEKCOPY = "last week copy";
+	private final String HEURISTIC = "most probable";
+	private final String ALPHABET = "alphabetical";
+	private final String CLEAR = "clear";
+	
 	
 	public OrdersPanel() {
 		storeLabel = new JLabel("Sklep: Not chosen");
@@ -39,32 +44,38 @@ public class OrdersPanel extends JPanel implements ActionListener{
 		table = new OrderTable();
 		toTop = new JButton(TOTOP);
 		lastWeek = new JButton(LASTWEEK);
+		lastWeekCopy = new JButton(LASTWEEKCOPY);
 		heuristic = new JButton(HEURISTIC);
+		alphabetical = new JButton(ALPHABET);
 		clear = new JButton(CLEAR);
 		normal = new JButton(NORMAL);
 		
 		toTop.addActionListener(this);
 		lastWeek.addActionListener(this);
+		lastWeekCopy.addActionListener(this);
 		heuristic.addActionListener(this);
+		alphabetical.addActionListener(this);
 		clear.addActionListener(this);
 		normal.addActionListener(this);
 		
 		tableScroller = new JScrollPane(table);
 		tableScroller.setPreferredSize(new Dimension(500, 700));
 		
-		MigLayout mig = new MigLayout("wrap 5");
-		mig.setColumnConstraints("[grow][grow][grow][grow][grow]");
-		mig.setRowConstraints("[30]20[grow][grow][grow]30");
+		MigLayout mig = new MigLayout("wrap 6");
+		mig.setColumnConstraints("[grow][grow][grow][grow][grow][grow]");
+		mig.setRowConstraints("[30]20[grow][grow][grow][grow][grow]30");
 		this.setLayout(mig);
 		
 		this.add(dateLabel, "span 3, center");
 		this.add(storeLabel, "span 2, center");
-		this.add(tableScroller, "cell 0 1 5 3, center");
+		this.add(tableScroller, "cell 0 1 6 3, center");
 		this.add(normal, "center");
+		this.add(alphabetical, "center");
 		this.add(toTop, "center");
 		this.add(lastWeek, "center");
-		this.add(heuristic, "center");
+//		this.add(heuristic, "center");
 		this.add(clear, "center");
+		this.add(lastWeekCopy, "cell 3 5 1 1, center");
 		
 	}
 
@@ -91,6 +102,10 @@ public class OrdersPanel extends JPanel implements ActionListener{
 				System.out.println("pressed last week");
 				table.sameAsLastWeek();
 				break;
+			case LASTWEEKCOPY:
+				System.out.println("pressed last week");
+				table.sameAsLastWeekCopy();
+				break;
 			case HEURISTIC:
 				System.out.println("pressed heuristic");
 				table.heuristic();
@@ -103,6 +118,11 @@ public class OrdersPanel extends JPanel implements ActionListener{
 				System.out.println("pressed normal");
 				table.update();
 				break;
+			case ALPHABET:
+				System.out.println("pressed normal");
+				table.alphabetical();
+				break;
+				
 		}
 		
 		table.repaint();

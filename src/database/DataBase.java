@@ -26,6 +26,8 @@ public class DataBase {
 		orderModel = new OrderModel(connection);
 		customerModel = new CustomerModel(connection);
 		productModel = new ProductModel(connection);
+		// if running first time then uncomment the init()
+//		init();
 	}
 
 	public static DataBase getInstance() {
@@ -105,8 +107,12 @@ public class DataBase {
 		return orderModel.getOrdersList(date);
 	}
 
-	public ArrayList<OrderDetails> getOrderDetails(String store, String date) {
-		return orderModel.getOrderDetails(store, date);
+	public ArrayList<OrderDetails> getOrderDetails(String store, String date, String orderBy) {
+		return orderModel.getOrderDetails(store, date, orderBy);
+	}
+	
+	public void deleteOrder(String store, String date) {
+		orderModel.deleteOrder(store, date);
 	}
 
 	public static void connect() {
@@ -143,5 +149,7 @@ public class DataBase {
 			System.err.println(e);
 		}
 	}
+
+	
 
 }

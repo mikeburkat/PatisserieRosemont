@@ -59,16 +59,32 @@ public class OrderModel {
 		
 	}
 	
+	public void deleteOrder(String store, String date){
+		String oid = getOrderID(store, date);
+		if (oid != null) {
+			String query = "delete from contained where oid="+oid+"; "
+					+ "delete from placed_order where oid="+oid+"; "
+					+ "delete from orders where oid="+oid+";";
+			System.out.println(query);
+			try {
+				statement = connection.createStatement();
+				statement.executeUpdate(query);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	public String getOrderID(String store, String date) {
 		String orderID = "";
 		String customerID = database.getCustomerID(store);
-		String getID = "select oid from placed_order "
+		String query = "select oid from placed_order "
 						+ "where cid='" + customerID + "' "
 						+ "and order_date='" + date + "'";
-		System.out.println(getID);
+		System.out.println(query);
 		try {
 			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery(getID);
+			ResultSet rs = statement.executeQuery(query);
 			while (rs.next()) {
 				orderID = rs.getString("oid");
 			}
@@ -129,6 +145,8 @@ public class OrderModel {
 			System.err.println(e.getMessage());
 		}
 	}
+	
+	
 
 	private void modifyOrder(String orderID, String productID, double quantity) {
 		String query = "update contained set quantity='" + quantity + "' "
@@ -161,22 +179,31 @@ public class OrderModel {
 		return stores;
 	}
 	
-	public ArrayList<OrderDetails> getOrderDetails(String store, String date) {
-		String orderID = getOrderID(store, date);
+	public ArrayList<OrderDetails> getOrderDetails(String store, String date, String orderBy) {
+		String oid = getOrderID(store, date);
 		ArrayList<OrderDetails> od = new ArrayList<OrderDetails>();
-		String query = "select * from contained "
-						+ "where oid='" + orderID + "'";
+		
+		String query = "select details.pid, name, details.quantity, category "
+				+ "from (select pid, quantity from contained "
+				+ "where oid='"+oid+"') details left join products using(pid) "
+				+ "union "
+				+ "select pid, name, 0.0, category "
+				+ "from products "
+				+ "where pid in (select pid from products "
+				+ "where pid not in (select C.pid from contained C where oid='"+oid+"')) "
+				+ "order by " + orderBy;
+		System.out.println(query);
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery(query);
 			while (rs.next()) {
-
-				String pID = rs.getString("pid");
-				String pName = database.getProductName(pID);
-				String q = rs.getString("quantity");
+				
+				String pID = rs.getString("details.pid");
+				String pName = rs.getString("name");
+				String q = rs.getString("details.quantity");
 				Double qd = Double.parseDouble(q);
 				
-				System.out.println("pID " + pID + " q " + q);
+				System.out.println("pid: " + pID + " name: " + pName + " quant: " + qd);
 				od.add(new OrderDetails(qd, pName));
 			}
 			

@@ -30,7 +30,6 @@ public class PatisserieRosemont extends JTabbedPane {
 	private PatisserieRosemont() {
 
 		db = DataBase.getInstance();
-		db.init();
 		
 		orders = new OrdersPanel();
 		storeChooserPane = new StoreChooserPane(orders);

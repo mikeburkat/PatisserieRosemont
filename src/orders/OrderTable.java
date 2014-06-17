@@ -10,7 +10,7 @@ public class OrderTable extends JTable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private OrderModel orderModel;
+	private OrderTableModel orderModel;
 	String date = null;
 	String store = null;
 	
@@ -20,7 +20,7 @@ public class OrderTable extends JTable {
 	}
 
 	public void update(){
-		orderModel = new OrderModel(date, store);
+		orderModel = new OrderTableModel(date, store);
 		this.setModel(orderModel);
 		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.setCellSelectionEnabled(true);
@@ -51,6 +51,10 @@ public class OrderTable extends JTable {
 	public void sameAsLastWeek() {
 		orderModel.sameAsLastWeek();
 	}
+	
+	public void sameAsLastWeekCopy() {
+		orderModel.sameAsLastWeekCopy();
+	}
 
 	public void heuristic() {
 		orderModel.heuristic();
@@ -59,6 +63,12 @@ public class OrderTable extends JTable {
 	public void clear() {
 		orderModel.clear();
 	}
+
+	public void alphabetical() {
+		orderModel.alphabetical();
+	}
+
+	
 
 
 }

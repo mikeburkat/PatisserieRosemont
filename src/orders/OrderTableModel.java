@@ -1,12 +1,16 @@
 package orders;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.table.AbstractTableModel;
 
 import database.DataBase;
 
-public class OrderModel extends AbstractTableModel {
+public class OrderTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
 	private String date;
@@ -15,7 +19,7 @@ public class OrderModel extends AbstractTableModel {
 	private DataBase db;
 	private String[] columnNames = { "Quantity", "Product Name" };
 
-	public OrderModel(String d, String s) {
+	public OrderTableModel(String d, String s) {
 		date = d;
 		store = s;
 
@@ -24,13 +28,13 @@ public class OrderModel extends AbstractTableModel {
 		System.out.println(present);
 		if (present) {
 			createDefaultOrder();
-			retrieveOrder();
+			retrieveOrder(store, date, "pid asc");
 		} else {
 			createDefaultOrder();
 		}
 	}
-
-	public OrderModel() {
+	
+	public OrderTableModel() {
 		this.db = DataBase.getInstance();
 		createDefaultOrder();
 	}
@@ -43,16 +47,13 @@ public class OrderModel extends AbstractTableModel {
 		}
 	}
 	
-	public void retrieveOrder() {
-		ArrayList<OrderDetails> od = db.getOrderDetails(store, date);
-		
-		for (OrderDetails o : od) {
-			System.out.println(store +" "+ date +" "+ o.getQuantity()+" "+ o.getProduct());
-			int i = getIndexOf(o.getProduct());
-			//setValueAt(o.getQuantity(), i, 0);
-			orderDetails[i].setQuantity(o.getQuantity());
+	public void retrieveOrder(String store, String date, String orderBy) {
+		ArrayList<OrderDetails> od = db.getOrderDetails(store, date, orderBy);
+		orderDetails = new OrderDetails[od.size()];
+		for (int i = 0; i < od.size(); i++) {
+			orderDetails[i] = od.get(i);
+//			setValueAt(od.get(i).getQuantity(), i, 0);
 		}
-		
 	}
 	
 	public int getIndexOf(String product){
@@ -105,39 +106,50 @@ public class OrderModel extends AbstractTableModel {
 	}
 
 	public void pushToTop() {
-		ArrayList<OrderDetails> od = new ArrayList<OrderDetails>();
-		for (OrderDetails o : orderDetails){
-			if (o.getQuantity() != 0.0) {
-				od.add(o);
-			}
-		}
-		for (OrderDetails o : orderDetails){
-			if (o.getQuantity() == 0.0) {
-				od.add(o);
-			}
-		}
-		
-		for (int i = 0; i < od.size(); i++) {
-			orderDetails[i] = new OrderDetails(od.get(i).getQuantity(), od.get(i).getProduct());
-		}
+		retrieveOrder(store, date, "quantity desc, pid asc");
 	}
-
+	
+	public void alphabetical() {
+		retrieveOrder(store, date, "name asc");
+	}
+	
 	public void sameAsLastWeek() {
-		// TODO Auto-generated method stub
-		
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+		Date d;
+		try {
+			d = sdf.parse(date);
+			cal.setTime(d);
+		} catch (ParseException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		cal.add(Calendar.DATE, -7);
+		String lastWeekDate = sdf.format(cal.getTime());
+		retrieveOrder(store, lastWeekDate, "quantity desc, pid asc");
+	}
+	
+	public void sameAsLastWeekCopy() {
+		clear();
+		sameAsLastWeek();
+		for (int i = 0; i < orderDetails.length; i++) {
+			if (orderDetails[i].getQuantity() > 0){
+				setValueAt(orderDetails[i].getQuantity(), i, 0);
+			} 
+		}
 	}
 
 	public void heuristic() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	public void clear() {
-		for (int i = 0; i < orderDetails.length; i++) {
-			if (orderDetails[i].getQuantity() != 0.0) {
-				setValueAt(0.0, i, 0);
-			}
-		}
+		db.deleteOrder(store, date);
+		retrieveOrder(store, date, "pid asc");
 	}
+
+	
+
+
 
 }
