@@ -49,6 +49,24 @@ public class CustomerModel {
 		return customerID;
 	}
 	
+	public String getCustomerPriceSet(String store) {
+		String priceUsed = "";
+		String query = "select price_used from customers where name='"+store+"'";
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+			while (rs.next()) {
+				priceUsed = rs.getString("price_used");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println(priceUsed);
+		return priceUsed;
+		
+		
+	}
+	
 	public ArrayList<String> getStoreNames(String city) {
 		ArrayList<String> stores = new ArrayList<String>();
 		String query = "select name from customers "

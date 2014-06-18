@@ -62,9 +62,11 @@ public class OrderModel {
 	public void deleteOrder(String store, String date){
 		String oid = getOrderID(store, date);
 		if (oid != null) {
-			String query = "delete from contained where oid="+oid+"; "
-					+ "delete from placed_order where oid="+oid+"; "
-					+ "delete from orders where oid="+oid+";";
+//			String query = "delete from contained where oid="+oid+"; "
+//					+ "delete from placed_order where oid="+oid+"; "
+//					+ "delete from orders where oid="+oid+";";
+			String query = "delete from contained where oid="+oid+"; ";
+			
 			System.out.println(query);
 			try {
 				statement = connection.createStatement();
@@ -101,28 +103,32 @@ public class OrderModel {
 		if (!oExists) {
 			createOrder(store, date);
 		}
-		String productID = database.getProductID(product);
-		System.out.println("pID " + productID);
+		String pid = database.getProductID(product);
+		System.out.println("pID " + pid);
 		
-		String orderID = getOrderID(store, date);
-		System.out.println("orderID " + orderID);
+		String oid = getOrderID(store, date);
+		System.out.println("orderID " + oid);
 		
-		boolean pExists = database.isProductPresent(orderID, productID);
+		boolean pExists = database.isProductPresent(oid, pid);
 		if (!pExists) {
-			addProductToOrder(orderID, productID, quantity);
+			addProductToOrder(store, oid, pid, quantity);
 			System.out.println("product was not found, adding new");
 		} else if (quantity == 0.0){
-			deleteFromOrder(orderID, productID);
+			deleteFromOrder(oid, pid);
 			System.out.println("product was found, deleting");
 		} else {
-			modifyOrder(orderID, productID, quantity);
+			modifyOrder(store, oid, pid, quantity);
 			System.out.println("product was found, modifying");
 		}
+		updateOrderTotal(oid);
+		
 	}
 	
-	private void addProductToOrder(String orderID, String productID, double quantity) {
-		String query = "insert into contained(oid, pid, quantity) " 
-						+ "values('" + orderID + "', '" + productID + "', '" + quantity + "'" + ")";
+	private void addProductToOrder(String store, String oid, String pid, double quantity) {
+		String priceUsed = database.getCustomerPriceSet(store);
+		String query = "insert into contained(oid, pid, quantity, sub_total) " 
+						+ "values(" + oid + ", " + pid + ", " + quantity + ", "
+								+ quantity + "*(select "+priceUsed+" from products where pid="+pid+"))";
 		System.out.println(query);
 		try {
 			statement = connection.createStatement();
@@ -132,6 +138,19 @@ public class OrderModel {
 			System.err.println(e.getMessage());
 		}
 	}
+	
+	private void updateOrderTotal(String oid) {
+		String query = "update orders set total=(select sum(sub_total) from contained where oid="+oid+") where oid="+oid;
+		System.out.println(query);
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate(query);
+		
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
 
 	private void deleteFromOrder(String orderID, String productID) {
 		String query = "delete from contained "
@@ -145,13 +164,13 @@ public class OrderModel {
 			System.err.println(e.getMessage());
 		}
 	}
-	
-	
 
-	private void modifyOrder(String orderID, String productID, double quantity) {
-		String query = "update contained set quantity='" + quantity + "' "
-				+ "where oid='" + orderID + "' "
-				+ "and pid='" + productID + "'";
+	private void modifyOrder(String store, String oid, String pid, double quantity) {
+		String priceUsed = database.getCustomerPriceSet(store);
+		String query = "update contained set quantity='" + quantity + "', "
+				+ "sub_total="+quantity+"*(select "+priceUsed+" from products where pid="+pid+")"
+				+ "where oid='" + oid + "' "
+				+ "and pid='" + pid + "'";
 		System.out.println(query);
 		try {
 			statement = connection.createStatement();

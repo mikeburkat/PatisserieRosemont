@@ -86,6 +86,10 @@ public class DataBase {
 	public String getCustomerID(String store) {
 		return customerModel.getCustomerID(store);
 	}
+	
+	public String getCustomerPriceSet(String store) {
+		return customerModel.getCustomerPriceSet(store);
+	}
 
 	public ArrayList<String> getStoreNames(String city) {
 		return customerModel.getStoreNames(city);
