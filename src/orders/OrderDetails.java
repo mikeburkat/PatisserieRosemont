@@ -6,8 +6,8 @@ public class OrderDetails {
 	private String product;
 	
 	public OrderDetails(double q, String p) {
-		this.quantity = q;
-		this.product = p;
+		quantity = q;
+		product = p;
 	}
 
 	public double getQuantity() {

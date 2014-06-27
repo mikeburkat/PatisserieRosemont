@@ -5,6 +5,7 @@ CREATE TABLE customers (
     name        VARCHAR( 0, 50 )  NOT NULL,
     city        VARCHAR( 0, 30 )  NOT NULL,
     address     TEXT,
+    address_city TEXT( 0, 30 ),
     postal_code TEXT( 0, 7 ),
     phone_num   TEXT 
 );

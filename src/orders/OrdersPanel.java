@@ -1,6 +1,5 @@
 package orders;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -10,9 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.table.TableColumn;
 
-import orders.MyTableCellEditor;
 import net.miginfocom.swing.MigLayout;
 
 public class OrdersPanel extends JPanel implements ActionListener{
@@ -21,7 +18,7 @@ public class OrdersPanel extends JPanel implements ActionListener{
 	private JLabel storeLabel;
 	private JLabel dateLabel;
 	private OrderTable table;
-	JScrollPane tableScroller;
+	private JScrollPane tableScroller;
 	private JButton toTop;
 	private JButton lastWeek;
 	private JButton lastWeekCopy;

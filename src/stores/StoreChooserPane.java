@@ -39,13 +39,6 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 		this.add(ottawa, "center");
 		
 	}
-	
-	
-	public String getselected() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {

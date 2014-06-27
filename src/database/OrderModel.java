@@ -180,13 +180,14 @@ public class OrderModel {
 		}
 	}
 	
-	public ArrayList<String> getOrdersList(String date) {
+	public ArrayList<String> getStoresWhoOrderedOn(String date) {
 		ArrayList<String> stores = new ArrayList<String>();
 		try {
 			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select cid from placed_order where order_date='"+date+"'");
+			ResultSet rs = statement.executeQuery("select name from customers where cid in "
+					+ "(select cid from placed_order where order_date='"+date+"')");
 			while (rs.next()) {
-				String s = rs.getString("cid");
+				String s = rs.getString("name");
 				stores.add(s);
 			}
 		} catch (SQLException e) {
@@ -199,9 +200,9 @@ public class OrderModel {
 	}
 	
 	public ArrayList<OrderDetails> getOrderDetails(String store, String date, String orderBy) {
-		String oid = getOrderID(store, date);
-		ArrayList<OrderDetails> od = new ArrayList<OrderDetails>();
 		
+		ArrayList<OrderDetails> od = new ArrayList<OrderDetails>();
+		String oid = getOrderID(store, date);
 		String query = "select details.pid, name, details.quantity, category "
 				+ "from (select pid, quantity from contained "
 				+ "where oid='"+oid+"') details left join products using(pid) "
@@ -230,6 +231,27 @@ public class OrderModel {
 			e.printStackTrace();
 		}
 		return od;
+	}
+
+	public ResultSet getOrderDetailsForPrinting(String store, String date) {
+		String oid = getOrderID(store, date);
+		String price = database.getCustomerPriceSet(store);
+		String query = "select name, od.quantity, od.sub_total, " + price
+				+ " from products, "
+				+ "(select pid, quantity, sub_total "
+				+ "from contained where oid="+oid+") od "
+				+ "using(pid)";
+		System.out.println(query);
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+			if (rs.isBeforeFirst()) {
+				return rs;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 

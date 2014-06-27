@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import orders.OrderDetails;
 
@@ -87,6 +88,10 @@ public class DataBase {
 		return customerModel.getCustomerID(store);
 	}
 	
+	public ResultSet getCustomerDetails(String store) {
+		return customerModel.getCustomerDetails(store);
+	}
+	
 	public String getCustomerPriceSet(String store) {
 		return customerModel.getCustomerPriceSet(store);
 	}
@@ -107,12 +112,17 @@ public class DataBase {
 		return productModel.getProductList();
 	}
 
-	public ArrayList<String> getOrdersList(String date) {
-		return orderModel.getOrdersList(date);
+	public ArrayList<String> getStoresWhoOrderedOn(String date) {
+		return orderModel.getStoresWhoOrderedOn(date);
 	}
 
 	public ArrayList<OrderDetails> getOrderDetails(String store, String date, String orderBy) {
 		return orderModel.getOrderDetails(store, date, orderBy);
+	}
+	
+	public ResultSet getOrderDetailsForPrinting(String store, String date,
+			String orderBy) {
+		return orderModel.getOrderDetailsForPrinting(store, date);
 	}
 	
 	public void deleteOrder(String store, String date) {
@@ -153,6 +163,12 @@ public class DataBase {
 			System.err.println(e);
 		}
 	}
+
+	
+
+	
+
+	
 
 	
 
