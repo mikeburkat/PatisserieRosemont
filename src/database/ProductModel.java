@@ -80,22 +80,24 @@ public class ProductModel {
 		return name;
 	}
 	
-	public ArrayList<String> getProductList() {
+	public ArrayList<String[]> getProductList() {
 		Statement statement;
-		ArrayList<String> products = new ArrayList<String>();
+		ArrayList<String[]> products = new ArrayList<String[]>();
 		System.out.println("here");
 		try {
 			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select name from products");
+			ResultSet rs = statement.executeQuery("select name, pid from products");
 			while (rs.next()) {
 				String p = rs.getString("name");
-				products.add(p);
+				String pid = rs.getString("pid");
+				String[] arr = {pid, p};
+				products.add(arr);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		for (String p: products){
-			System.out.println(p);
+		for (String[] p: products){
+			System.out.println(p[0] + " : " + p[1]);
 		} 
 		return products;
 	}

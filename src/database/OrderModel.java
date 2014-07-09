@@ -22,14 +22,13 @@ public class OrderModel {
 	public boolean isOrderPresent(String date, String store) {
 		boolean present = false;
 		if (date == null || store == null) return false;
-		System.out.println("isOrderPresent: "+store);
+		
 		String customerID = database.getCustomerID(store);
 		
 		String query = "select oid from placed_order "
 						+ "where order_date='"+date+"' and cid='"+customerID+"'";
 		try {
 			statement = connection.createStatement();
-			System.out.println("isOrderPresent");
 			ResultSet rs = statement.executeQuery(query);
 			while (rs.next()) {
 				present = true;
@@ -38,16 +37,16 @@ public class OrderModel {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		System.out.println("isOrderPresent for store: " + store + " and date: " + date + " ans: " + present);
 		return present;
 	}
 	
 	public void createOrder(String store, String date) {
-		String query = "begin transaction; "
-				+ "insert into orders(total) values(0.0); "
+		if (store == null || date == null) return;
+		String query = "insert into orders(total) values(0.0); "
 				+ "insert into placed_order(cid, oid, order_date) "
 					+ "values((select cid from customers where name='"+store+"'), "
-					+ "last_insert_rowid(), '"+ date +"'); "
-				+ "commit;";
+					+ "last_insert_rowid(), '"+ date +"');";
 		System.out.println(query);
 		try {
 			statement = connection.createStatement();
@@ -55,8 +54,8 @@ public class OrderModel {
 
 		} catch (SQLException e) {
 			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}
-		
 	}
 	
 	public void deleteOrder(String store, String date){
@@ -97,13 +96,12 @@ public class OrderModel {
 		return orderID;
 	}
 	
-	public void addToOrder(double quantity, String product, String date, String store) {
+	public void addToOrder(double quantity, String pid, String date, String store) {
 		boolean oExists = isOrderPresent(date, store); // check if order exists
 		System.out.println("exists " + oExists);
 		if (!oExists) {
 			createOrder(store, date);
 		}
-		String pid = database.getProductID(product);
 		System.out.println("pID " + pid);
 		
 		String oid = getOrderID(store, date);
@@ -224,7 +222,7 @@ public class OrderModel {
 				Double qd = Double.parseDouble(q);
 				
 				System.out.println("pid: " + pID + " name: " + pName + " quant: " + qd);
-				od.add(new OrderDetails(qd, pName));
+				od.add(new OrderDetails(qd, pName, pID));
 			}
 			
 		} catch (SQLException e) {
@@ -233,7 +231,7 @@ public class OrderModel {
 		return od;
 	}
 
-	public ResultSet getOrderDetailsForPrinting(String store, String date) {
+	public ArrayList<String[]> getOrderDetailsForPrinting(String store, String date) {
 		String oid = getOrderID(store, date);
 		String price = database.getCustomerPriceSet(store);
 		String query = "select name, od.quantity, od.sub_total, " + price
@@ -246,8 +244,39 @@ public class OrderModel {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery(query);
 			if (rs.isBeforeFirst()) {
-				return rs;
+				ArrayList<String[]> result = new ArrayList<String[]>();
+				
+				while (rs.next()) {
+					String name = rs.getString("name");
+					String quant = rs.getString("od.quantity");
+					String sub = rs.getString("od.sub_total");
+					String unitPrice = rs.getString(price);
+					String[] row = {quant, name, unitPrice, sub};
+					result.add(row);
+				}
+				return result;
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public String addToOrder(String store, String date) {
+		String oid = getOrderID(store, date);
+		String query = "select * "
+				+ "from orders "
+				+ "where oid='" +oid+ "'";
+		System.out.println(query);
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+			if (rs.isBeforeFirst()) {
+				rs.next();
+				String total = rs.getString("total");
+				return total;
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

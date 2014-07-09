@@ -25,12 +25,12 @@ public class OrderTableModel extends AbstractTableModel {
 
 		this.db = DataBase.getInstance();
 		boolean present = db.isOrderPresent(date, store);
-		System.out.println(present);
 		if (present) {
 			createDefaultOrder();
 			retrieveOrder(store, date, "pid asc");
 		} else {
 			createDefaultOrder();
+			db.createOrder(store, date);
 		}
 	}
 	
@@ -40,10 +40,10 @@ public class OrderTableModel extends AbstractTableModel {
 	}
 
 	public void createDefaultOrder() {
-		ArrayList<String> pList = db.getProductList();
+		ArrayList<String[]> pList = db.getProductList();
 		orderDetails = new OrderDetails[pList.size()];
 		for (int i = 0; i < pList.size(); i++) {
-			orderDetails[i] = new OrderDetails(0, pList.get(i));
+			orderDetails[i] = new OrderDetails(0, pList.get(i)[1], pList.get(i)[0]);
 		}
 	}
 	
@@ -88,7 +88,7 @@ public class OrderTableModel extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int col) {
 		System.out.println("Value = " + value);
 		orderDetails[row].setQuantity((Double)value);
-		db.addToOrder(orderDetails[row].getQuantity(), orderDetails[row].getProduct(), date, store);
+		db.addToOrder(orderDetails[row].getQuantity(), orderDetails[row].getPid(), date, store);
 	}
 
 	@Override

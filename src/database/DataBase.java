@@ -62,8 +62,12 @@ public class DataBase {
 		return orderModel.getOrderID(store, date);
 	}
 	
-	public void addToOrder(double quantity, String product, String date, String store) {
-		orderModel.addToOrder(quantity, product, date, store);
+	public void addToOrder(double quantity, String pid, String date, String store) {
+		orderModel.addToOrder(quantity, pid, date, store);
+	}
+	
+	public String getOrderTotal(String store, String date) {
+		return orderModel.addToOrder(store, date);
 	}
 
 	public void addProduct(String category, String name, double mtlPrice,
@@ -108,7 +112,7 @@ public class DataBase {
 		return productModel.isProductPresent(orderID, productID);
 	}
 	
-	public ArrayList<String> getProductList() {
+	public ArrayList<String[]> getProductList() {
 		return productModel.getProductList();
 	}
 
@@ -120,7 +124,7 @@ public class DataBase {
 		return orderModel.getOrderDetails(store, date, orderBy);
 	}
 	
-	public ResultSet getOrderDetailsForPrinting(String store, String date,
+	public ArrayList<String[]> getOrderDetailsForPrinting(String store, String date,
 			String orderBy) {
 		return orderModel.getOrderDetailsForPrinting(store, date);
 	}
@@ -163,6 +167,7 @@ public class DataBase {
 			System.err.println(e);
 		}
 	}
+
 
 	
 

@@ -16,7 +16,6 @@ public class OrderTable extends JTable {
 	
 	public OrderTable() {
 		update();
-		
 	}
 
 	public void update(){
