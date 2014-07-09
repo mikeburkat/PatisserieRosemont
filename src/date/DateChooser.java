@@ -10,7 +10,8 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import orders.OrdersPanel;
 import print.PrintPanel;
-import reports.ReportsPanel;
+import reports.GraphPanel;
+import reports.TotalsPanel;
 
 import com.toedter.calendar.JCalendar;
 
@@ -24,16 +25,18 @@ public class DateChooser extends JPanel {
 	private SimpleDateFormat sdf;
 	private OrdersPanel orders;
 	private PrintPanel print;
-	private ReportsPanel reports;
+	private GraphPanel reports;
 	private DriversPanel drivers;
+	private TotalsPanel totals;
 	
 	//TODO add a choose TODAY button
 
-	public DateChooser(OrdersPanel o, PrintPanel p, ReportsPanel r, DriversPanel d) {
+	public DateChooser(OrdersPanel o, PrintPanel p, GraphPanel r, DriversPanel d, TotalsPanel t) {
 		orders = o;
 		print = p;
 		reports = r;
 		drivers = d;
+		totals = t;
 		
 		sdf = new SimpleDateFormat("yyyy-MM-dd");
 		MigLayout mig = new MigLayout("wrap 3");
@@ -81,6 +84,7 @@ public class DateChooser extends JPanel {
 			print.setDate(s);
 			reports.setDate(s);
 			drivers.setDate(s);
+			totals.setDate(s);
 		}
 	}
 

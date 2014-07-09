@@ -168,6 +168,37 @@ public class DataBase {
 		}
 	}
 
+	
+	public ArrayList<String[]> getTotals(String date, String productChoice, String cityChoice) {
+		ArrayList<String[]> result = new ArrayList<String[]>();
+		
+		String query = "select P.pid, P.name, sum(C.quantity) "
+				+ "from placed_order PO, contained C, products P, customers S "
+				+ "where PO.oid=C.oid "
+				+ "and P.pid=C.pid "
+				+ "and S.cid=PO.cid "
+				+ "and PO.order_date='" + date + "' "
+				+ "and P.category in (" + productChoice + ") "
+				+ "and S.city in (" + cityChoice + ") "
+				+ "group by P.pid";
+		
+		System.out.println(query);
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+			
+			while (rs.next()) {
+				String p = rs.getString("name");
+				String q = rs.getString("sum(C.quantity)");
+				System.out.println("name: " + p + " quant: " + q);
+				result.add(new String[]{q, p});
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 
 	
 

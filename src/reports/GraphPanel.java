@@ -16,12 +16,12 @@ import de.erichseifert.gral.util.GraphicsUtils;
 import de.erichseifert.gral.util.Insets2D;
 import de.erichseifert.gral.util.Location;
 
-public class ReportsPanel extends JPanel {
+public class GraphPanel extends JPanel {
 
 	String date;
 	Color COLOR1 = Color.BLUE;
 
-	public ReportsPanel() {
+	public GraphPanel() {
 		setLayout(new BorderLayout());
 		// Create example data
 		DataTable data = new DataTable(Integer.class, Integer.class,

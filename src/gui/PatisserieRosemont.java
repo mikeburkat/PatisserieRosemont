@@ -1,16 +1,15 @@
 package gui;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import orders.OrdersPanel;
 import print.PrintPanel;
-import reports.ReportsPanel;
+import reports.GraphPanel;
+import reports.TotalsPanel;
 import stores.StoreChooserPane;
 import database.DataBase;
 import date.DateChooser;
@@ -24,8 +23,10 @@ public class PatisserieRosemont extends JTabbedPane {
 	private JPanel storeChooserPane;
 	private OrdersPanel orders;
 	private PrintPanel print;
-	private ReportsPanel reports;
+	private TotalsPanel totals;
+	private GraphPanel graphs;
 	private DriversPanel drivers;
+	private final static JTabbedPane tpane = new JTabbedPane();
 
 	private PatisserieRosemont() {
 
@@ -34,25 +35,42 @@ public class PatisserieRosemont extends JTabbedPane {
 		orders = new OrdersPanel();
 		storeChooserPane = new StoreChooserPane(orders);
 		print = new PrintPanel();
-		reports = new ReportsPanel();
+		totals = new TotalsPanel();
+		graphs = new GraphPanel();
 		drivers = new DriversPanel();
-		dateChooser = new DateChooser(orders, print, reports, drivers);
+		dateChooser = new DateChooser(orders, print, graphs, drivers, totals);
 		
-		this.addTab("Data", dateChooser);
-		this.addTab("Sklep", storeChooserPane);
-		this.addTab("Order", orders);
-		this.addTab("Drukuj", print);
-		this.addTab("Totaly", reports);
-		this.addTab("Kierowcy", drivers);
-
+		tpane.addTab("	Data	", dateChooser);
+		tpane.addTab("	Sklep	", storeChooserPane);
+		tpane.addTab("	Order	", orders);
+		tpane.addTab("	Drukuj	", print);
+		tpane.addTab("	Totaly	", totals);
+		tpane.addTab("	Kierowcy", drivers);
+		tpane.addTab("	Graphs	", graphs);
+		
+		tpane.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				int tab = tpane.getSelectedIndex();
+				System.out.println("Tab: " + tab);
+				
+				switch (tab) {
+				case 4:
+					break;
+				default:
+					break;
+				};
+			}
+		});
+		this.add(tpane);
 	}
 
 	private static void createAndShowGUI() {
 		JFrame frame = new JFrame("Patisserie Rosemont");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JTabbedPane tabbedPane = new PatisserieRosemont();
-		frame.setContentPane(tabbedPane);
+		PatisserieRosemont tabbedPane = new PatisserieRosemont();
+		frame.setContentPane(tpane);
 
 		frame.setSize(700, 800);
 		frame.setVisible(true);
