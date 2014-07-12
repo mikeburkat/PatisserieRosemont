@@ -191,21 +191,12 @@ public class DataBase {
 				String p = rs.getString("name");
 				String q = rs.getString("sum(C.quantity)");
 				System.out.println("name: " + p + " quant: " + q);
-				result.add(new String[]{q, p});
+				result.add(new String[]{p, q});
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return result;
 	}
-
-
-	
-
-	
-
-	
-
-	
 
 }

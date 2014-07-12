@@ -2,6 +2,8 @@ package reports;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -11,13 +13,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import print.PrintOrder;
 import net.miginfocom.swing.MigLayout;
 import database.DataBase;
 
 public class TotalsPanel extends JPanel implements ActionListener {
 
 	String date;
-	String[] columns = {"quantity", "Product"};
+	String[] columns = { "quantity", "Product" };
 	JTable table;
 	DataBase db;
 	String bread = "'bread', 'pastry'";
@@ -26,56 +29,59 @@ public class TotalsPanel extends JPanel implements ActionListener {
 	String cityChoice = "'Montreal', 'Ottawa'";
 	JScrollPane sp;
 	DefaultTableModel tableModel;
-	
+
 	JButton allProducts;
 	JButton bakery;
 	JButton pastry;
 	JButton allCities;
 	JButton montreal;
 	JButton ottawa;
-	
+	JButton print;
+
 	JLabel selection;
-	
 
 	public TotalsPanel() {
 		db = DataBase.getInstance();
-		
+
 		MigLayout mig = new MigLayout();
 		mig.setColumnConstraints("[grow][grow][grow]");
-		mig.setRowConstraints("[grow][grow][grow][grow][grow][grow]");
-		
+		mig.setRowConstraints("[grow][grow][grow][grow][grow][grow][grow]");
+
 		this.setLayout(mig);
-		
+
 		tableModel = new DefaultTableModel(columns, 0);
 		sp = new JScrollPane();
 		table = new JTable(tableModel);
 		sp = new JScrollPane(table);
-		this.add(sp, "cell 0 1 3 5, center");
-		
+		this.add(sp, "cell 0 1 3 4, center");
+
 		allProducts = new JButton("Piek + Cuk");
 		bakery = new JButton("Piekarnia");
 		pastry = new JButton("Cukiernia");
 		allCities = new JButton("MTL + OTT");
 		montreal = new JButton("Montreal");
 		ottawa = new JButton("Ottawa");
-		
+		print = new JButton("Print");
+
 		allProducts.addActionListener(this);
 		bakery.addActionListener(this);
 		pastry.addActionListener(this);
 		allCities.addActionListener(this);
 		montreal.addActionListener(this);
 		ottawa.addActionListener(this);
-		
+		print.addActionListener(this);
+
 		this.add(allProducts, "cell 0 5, center");
 		this.add(bakery, "cell 1 5, center");
 		this.add(pastry, "cell 2 5, center");
 		this.add(allCities, "cell 0 6, center");
 		this.add(montreal, "cell 1 6, center");
 		this.add(ottawa, "cell 2 6, center");
-		
+		this.add(print, "cell 2 7, center");
+
 		selection = new JLabel(productChoice + " | " + cityChoice);
 		this.add(selection, "cell 1 0, center");
-		
+
 	}
 
 	public void setDate(String newDate) {
@@ -84,14 +90,15 @@ public class TotalsPanel extends JPanel implements ActionListener {
 	}
 
 	public void update() {
-		ArrayList<String[]> rows = db.getTotals(date, productChoice, cityChoice);
-		
+		ArrayList<String[]> rows = db
+				.getTotals(date, productChoice, cityChoice);
+
 		tableModel = new DefaultTableModel(columns, 0);
 		for (String[] row : rows) {
 			tableModel.addRow(row);
 		}
 		table.setModel(tableModel);
-		
+
 		this.repaint();
 	}
 
@@ -134,7 +141,15 @@ public class TotalsPanel extends JPanel implements ActionListener {
 			update();
 			System.out.println(e.getActionCommand());
 			break;
+		case "Print":
+			print();
+			break;
 		}
+	}
+
+	private void print() {
+		System.out.println("PRITING SELECTION");
+		PrintTotals pt = new PrintTotals(date);
 	}
 
 }
