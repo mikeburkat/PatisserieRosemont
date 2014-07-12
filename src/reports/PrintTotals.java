@@ -75,13 +75,14 @@ class PrintTotalsContent implements Printable {
 				bread + ", " + cake, "'Montreal'");
 		ArrayList<String[]> detailsOtt = db.getTotals(date,
 				bread + ", " + cake, "'Ottawa'");
-		
+
 		details = new ArrayList<String[]>();
 		for (String[] detail : detailsAll) {
-			String[] arr = {detail[0], detail[1], new String("Ott"), new String("Mtl")};
+			String[] arr = { detail[0], detail[1], new String("Ott"),
+					new String("Mtl") };
 			details.add(arr);
 		}
-		
+
 	}
 
 	private void printGrid(Graphics g, PageFormat pf) {
@@ -126,27 +127,14 @@ class PrintTotalsContent implements Printable {
 		return PAGE_EXISTS;
 	}
 
-	private void printOrderDetails(Graphics g, PageFormat pf) {
-		int y = 30;
-		int index = 0;
-		int lastLine = index + lines;
+	public void setNumberOfLines(PageFormat pf) {
 
-		Iterator<String[]> it = null;
-		if (index < details.size()) {
-			it = details.listIterator(index);
-		}
-		int x = 0;
-		while (it != null && it.hasNext() && index < lastLine) {
-			String[] product = it.next();
-			System.out.println(index + " : " + y + " : " + product[1] + " : " + product[0]);
-			x = 0;
-			g.drawString(product[0], x, y);
-			g.drawString(product[1], x += 200, y);
-			g.drawString(product[2], x += 66, y);
-			g.drawString(product[3], x += 66, y);
-			y += 15;
-			index++;
-		}
+		int usable = (int) (pf.getImageableHeight());
+		int fontSize = 15;
+		lines = usable / fontSize;
+
+		System.out.println("usable: " + usable + "Total Lines: "
+				+ details.size() + " lines on page: " + lines);
 	}
 
 	private void printContentBar(Graphics g, PageFormat pf) {
@@ -156,22 +144,40 @@ class PrintTotalsContent implements Printable {
 		for (int i = 0; i < 2; i++) {
 			g.drawString("Item", x, y);
 			g.drawString("Total", x += 200, y);
-			g.drawString("Ottawa", x += 66, y);
-			g.drawString("Montreal", x += 66, y);
+			g.drawString("Ottawa", x += 60, y);
+			g.drawString("Montreal", x += 60, y);
 			x = 400;
 		}
 
 		g.drawLine(0, 15, (int) pf.getImageableWidth(), 15);
 	}
 
-	public void setNumberOfLines(PageFormat pf) {
+	private void printOrderDetails(Graphics g, PageFormat pf) {
+		int y = 30;
+		int index = 0;
 
-		int usable = (int) (pf.getImageableHeight());
-		int fontSize = 15;
-		lines = usable / fontSize;
-
-		System.out.println("usable: " + usable + "Total Lines: "
-				+ details.size() + " lines on page: " + lines);
+		Iterator<String[]> it = null;
+		if (index < details.size()) {
+			it = details.listIterator(index);
+		}
+		int x = 0;
+		int column = 0;
+		while (it != null && it.hasNext()) {
+			String[] product = it.next();
+			System.out.println(index + " : " + y + " : " + product[1] + " : "
+					+ product[0]);
+			x = 0 + 400 * column;
+			g.drawString(product[0], x, y);
+			g.drawString(product[1], x += 200, y);
+			g.drawString(product[2], x += 60, y);
+			g.drawString(product[3], x += 60, y);
+			y += 15;
+			index++;
+			if (y > pf.getImageableHeight()) {
+				y = 30;
+				column++;
+			}
+		}
 	}
 
 }
