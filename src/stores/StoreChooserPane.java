@@ -18,6 +18,7 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 	private JLabel selectedStore;
 	private JButton addNew;
 	private OrdersPanel orders;
+	private String date;
 
 	public StoreChooserPane(OrdersPanel o) {
 		orders = o;
@@ -59,7 +60,15 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 	}
 
 	
-	
+	public void setDate(String d) {
+		date = d;
+		this.updateOrederedStoreList();
+	}
+
+	public void updateOrederedStoreList() {
+		montreal.updateOrderedStoreList(date);
+		ottawa.updateOrderedStoreList(date);		
+	}
 	
 	
 }

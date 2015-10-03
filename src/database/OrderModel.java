@@ -124,9 +124,9 @@ public class OrderModel {
 	
 	private void addProductToOrder(String store, String oid, String pid, double quantity) {
 		String priceUsed = database.getCustomerPriceSet(store);
-		String query = "insert into contained(oid, pid, quantity, sub_total) " 
-						+ "values(" + oid + ", " + pid + ", " + quantity + ", "
-								+ quantity + "*(select "+priceUsed+" from products where pid="+pid+"))";
+		String query = "insert into contained(oid, pid, quantity, price) " 
+						+ "values(" + oid + ", " + pid + ", " + quantity 
+						+ ", (select "+priceUsed+" from products where pid="+pid+"))";
 		System.out.println(query);
 		try {
 			statement = connection.createStatement();
@@ -183,7 +183,8 @@ public class OrderModel {
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery("select name from customers where cid in "
-					+ "(select cid from placed_order where order_date='"+date+"')");
+					+ "(select cid from placed_order as p join orders as o on p.oid=o.oid "
+					+ "where order_date='"+date+"' and o.total > 0)");
 			while (rs.next()) {
 				String s = rs.getString("name");
 				stores.add(s);

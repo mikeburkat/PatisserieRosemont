@@ -12,6 +12,7 @@ import orders.OrdersPanel;
 import print.PrintPanel;
 import reports.GraphPanel;
 import reports.TotalsPanel;
+import stores.StoreChooserPane;
 
 import com.toedter.calendar.JCalendar;
 
@@ -28,15 +29,17 @@ public class DateChooser extends JPanel {
 	private GraphPanel reports;
 	private DriversPanel drivers;
 	private TotalsPanel totals;
+	private StoreChooserPane stores;
 	
 	//TODO add a choose TODAY button
 
-	public DateChooser(OrdersPanel o, PrintPanel p, GraphPanel r, DriversPanel d, TotalsPanel t) {
+	public DateChooser(OrdersPanel o, PrintPanel p, GraphPanel r, DriversPanel d, TotalsPanel t, StoreChooserPane s) {
 		orders = o;
 		print = p;
 		reports = r;
 		drivers = d;
 		totals = t;
+		stores = s;
 		
 		sdf = new SimpleDateFormat("yyyy-MM-dd");
 		MigLayout mig = new MigLayout("wrap 3");
@@ -85,6 +88,7 @@ public class DateChooser extends JPanel {
 			reports.setDate(s);
 			drivers.setDate(s);
 			totals.setDate(s);
+			stores.setDate(s);
 		}
 	}
 

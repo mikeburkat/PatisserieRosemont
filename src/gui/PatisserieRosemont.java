@@ -20,7 +20,7 @@ public class PatisserieRosemont extends JTabbedPane {
 	private static final long serialVersionUID = 1L;
 	private DataBase db;
 	private JPanel dateChooser;
-	private JPanel storeChooserPane;
+	private StoreChooserPane storeChooserPane;
 	private OrdersPanel orders;
 	private PrintPanel print;
 	private TotalsPanel totals;
@@ -38,15 +38,15 @@ public class PatisserieRosemont extends JTabbedPane {
 		totals = new TotalsPanel();
 		graphs = new GraphPanel();
 		drivers = new DriversPanel();
-		dateChooser = new DateChooser(orders, print, graphs, drivers, totals);
+		dateChooser = new DateChooser(orders, print, graphs, drivers, totals, storeChooserPane);
 		
 		tpane.addTab("	Data	", dateChooser);
 		tpane.addTab("	Sklep	", storeChooserPane);
 		tpane.addTab("	Order	", orders);
 		tpane.addTab("	Drukuj	", print);
 		tpane.addTab("	Totaly	", totals);
-		tpane.addTab("	Kierowcy", drivers);
-		tpane.addTab("	Graphs	", graphs);
+		//tpane.addTab("	Kierowcy", drivers);
+		//tpane.addTab("	Graphs	", graphs);
 		
 		tpane.addChangeListener(new ChangeListener() {
 			@Override
@@ -55,6 +55,8 @@ public class PatisserieRosemont extends JTabbedPane {
 				System.out.println("Tab: " + tab);
 				
 				switch (tab) {
+				case 1:
+					storeChooserPane.updateOrederedStoreList();
 				case 4:
 					break;
 				default:
