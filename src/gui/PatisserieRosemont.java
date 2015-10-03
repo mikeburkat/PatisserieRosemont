@@ -57,7 +57,12 @@ public class PatisserieRosemont extends JTabbedPane {
 				switch (tab) {
 				case 1:
 					storeChooserPane.updateOrederedStoreList();
+					break;
+				case 3:
+					print.updateList();
+					break;
 				case 4:
+					totals.update();
 					break;
 				default:
 					break;

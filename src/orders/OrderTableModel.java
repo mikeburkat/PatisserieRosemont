@@ -140,7 +140,7 @@ public class OrderTableModel extends AbstractTableModel {
 	}
 
 	public void heuristic() {
-		
+		// TODO: predict what the order will be.
 	}
 
 	public void clear() {

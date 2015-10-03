@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ProductModel {
 
@@ -34,13 +35,9 @@ public class ProductModel {
 		return present;
 	}
 
-	public void addProduct(String category, String name, double mtlPrice,
-			String date) {
-		String query = "insert into "
-				+ "products(name, category, montreal_Price, dateCreated, dateEffective) "
-				+ "values(" + "'" + category + "', " + "'" + name
-				+ "', " + "'" + mtlPrice + "', " + "'" + date
-				+ "', " + "'" + date + "'" + ")";
+	public void addProduct(Product p) {
+		String query = p.getInsertQuery();
+		System.out.println(query);
 		try {
 			statement = connection.createStatement();
 			statement.executeUpdate(query);
@@ -49,6 +46,17 @@ public class ProductModel {
 		}
 	}
 
+	private void updateProduct(Product p) {
+		String query = p.getUpdateQuery();
+		System.out.println(query);
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate(query);
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
 	public String getProductID(String product) {
 		String ProductID = "";
 		String query = "select pid from products where name='" + product + "'";
@@ -100,6 +108,30 @@ public class ProductModel {
 			System.out.println(p[0] + " : " + p[1]);
 		} 
 		return products;
+	}
+
+	public Product getProduct(String name) {
+		String query = "select * from products where name='"+name+"' and updated='false'";
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+			if (rs.next()) {
+				return new Product(rs);				
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void replace(Product oldP, Product p) {
+		oldP.updated = true;
+		oldP.dateReplaced = new Date();
+		p.originalId = oldP.pid;
+		this.addProduct(p);
+		this.updateProduct(oldP);
 	}
 
 }

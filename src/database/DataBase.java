@@ -16,7 +16,7 @@ public class DataBase {
 	private static DataBase instance;
 	private DataInitialization init;
 	private Statement statement;
-	
+
 	private OrderModel orderModel;
 	private CustomerModel customerModel;
 	private ProductModel productModel;
@@ -28,7 +28,7 @@ public class DataBase {
 		customerModel = new CustomerModel(connection);
 		productModel = new ProductModel(connection);
 		// if running first time then uncomment the init()
-//		init();
+		init();
 	}
 
 	public static DataBase getInstance() {
@@ -37,48 +37,58 @@ public class DataBase {
 		}
 		return instance;
 	}
-	
+
 	public void init() {
 		init = new DataInitialization(this, connection);
-		
-		init.clearDB(); // clears and recreates the tables
-		init.runScript("DB_schema.sql"); // init the database schema
-		
+
+		//init.clearDB(); // clears and recreates the tables
+		//init.runScript("DB_schema.sql"); // init the database schema
+
 		// Load random datasets for testing.
-		init.runScript("random_customers.sql");
-		init.runScript("random_products.sql");
-		init.runScript("random_order.sql");
-		init.runScript("random_placed_order.sql");
-		init.runScript("random_contained.sql");
-//		init.initProducts();
-//		init.initStores();
+		// init.runScript("random_customers.sql");
+		// init.runScript("random_products.sql");
+		// init.runScript("random_order.sql");
+		// init.runScript("random_placed_order.sql");
+		// init.runScript("random_contained.sql");
+		init.initProducts();
+		//init.initStores();
 	}
-	
+
 	public void createOrder(String store, String date) {
 		orderModel.createOrder(store, date);
 	}
-	
+
 	public String getOrderID(String store, String date) {
 		return orderModel.getOrderID(store, date);
 	}
-	
-	public void addToOrder(double quantity, String pid, String date, String store) {
+
+	public void addToOrder(double quantity, String pid, String date,
+			String store) {
 		orderModel.addToOrder(quantity, pid, date, store);
 	}
-	
+
 	public String getOrderTotal(String store, String date) {
 		return orderModel.addToOrder(store, date);
 	}
 
-	public void addProduct(String category, String name, double mtlPrice,
-			String date) {
-		productModel.addProduct(category, name, mtlPrice, date);
+	public void addProduct(Product p) {
+		Product dbP = productModel.getProduct(p.name);
+		if (dbP == null) {
+			System.out.println("db pruduct "+p.name+" null");
+			productModel.addProduct(p);
+		} else {
+			if (!p.equals(dbP)) {
+				System.out.println(p.toString());
+				System.out.println(dbP.toString());
+				productModel.replace(dbP, p);
+			}
+		}
 	}
-	
+
 	public String getProductID(String product) {
 		return productModel.getProductID(product);
 	}
-	
+
 	public String getProductName(String pID) {
 		return productModel.getProductName(pID);
 	}
@@ -87,15 +97,15 @@ public class DataBase {
 			String postal, String phone) {
 		customerModel.addCustomer(name, city, address, postal, phone);
 	}
-	
+
 	public String getCustomerID(String store) {
 		return customerModel.getCustomerID(store);
 	}
-	
+
 	public ResultSet getCustomerDetails(String store) {
 		return customerModel.getCustomerDetails(store);
 	}
-	
+
 	public String getCustomerPriceSet(String store) {
 		return customerModel.getCustomerPriceSet(store);
 	}
@@ -103,15 +113,15 @@ public class DataBase {
 	public ArrayList<String> getStoreNames(String city) {
 		return customerModel.getStoreNames(city);
 	}
-	
+
 	public boolean isOrderPresent(String date, String store) {
 		return orderModel.isOrderPresent(date, store);
 	}
-	
+
 	public boolean isProductPresent(String orderID, String productID) {
 		return productModel.isProductPresent(orderID, productID);
 	}
-	
+
 	public ArrayList<String[]> getProductList() {
 		return productModel.getProductList();
 	}
@@ -120,15 +130,16 @@ public class DataBase {
 		return orderModel.getStoresWhoOrderedOn(date);
 	}
 
-	public ArrayList<OrderDetails> getOrderDetails(String store, String date, String orderBy) {
+	public ArrayList<OrderDetails> getOrderDetails(String store, String date,
+			String orderBy) {
 		return orderModel.getOrderDetails(store, date, orderBy);
 	}
-	
-	public ArrayList<String[]> getOrderDetailsForPrinting(String store, String date,
-			String orderBy) {
+
+	public ArrayList<String[]> getOrderDetailsForPrinting(String store,
+			String date, String orderBy) {
 		return orderModel.getOrderDetailsForPrinting(store, date);
 	}
-	
+
 	public void deleteOrder(String store, String date) {
 		orderModel.deleteOrder(store, date);
 	}
@@ -168,30 +179,27 @@ public class DataBase {
 		}
 	}
 
-	
-	public ArrayList<String[]> getTotals(String date, String productChoice, String cityChoice) {
+	public ArrayList<String[]> getTotals(String date, String productChoice,
+			String cityChoice) {
 		ArrayList<String[]> result = new ArrayList<String[]>();
-		
+
 		String query = "select P.pid, P.name, sum(C.quantity) "
 				+ "from placed_order PO, contained C, products P, customers S "
-				+ "where PO.oid=C.oid "
-				+ "and P.pid=C.pid "
-				+ "and S.cid=PO.cid "
-				+ "and PO.order_date='" + date + "' "
+				+ "where PO.oid=C.oid " + "and P.pid=C.pid "
+				+ "and S.cid=PO.cid " + "and PO.order_date='" + date + "' "
 				+ "and P.category in (" + productChoice + ") "
-				+ "and S.city in (" + cityChoice + ") "
-				+ "group by P.pid";
-		
+				+ "and S.city in (" + cityChoice + ") " + "group by P.pid";
+
 		System.out.println(query);
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery(query);
-			
+
 			while (rs.next()) {
 				String p = rs.getString("name");
 				String q = rs.getString("sum(C.quantity)");
 				System.out.println("name: " + p + " quant: " + q);
-				result.add(new String[]{p, q});
+				result.add(new String[] { p, q });
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -102,8 +102,6 @@ public class DataInitialization {
 							+ "rosemont_price REAL              NOT NULL, "
 							+ "updated        BOOLEAN           NOT NULL DEFAULT ( 0 ),  "
 							+ "date_created   DATETIME 			NOT NULL, "
-							+ "date_effective DATETIME          NOT NULL, "
-							+ "date_end       DATETIME, "
 							+ "date_replaced  DATETIME, "
 							+ "original_id    INTEGER );");
 

@@ -10,6 +10,8 @@ import org.w3c.dom.Element;
 
 import java.io.File;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DataLoader {
 	private DataBase db;
@@ -45,7 +47,7 @@ public class DataLoader {
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 					Element eElement = (Element) nNode;
-					System.out.println("First Name : "
+					System.out.println("Store Name : "
 							+ eElement.getElementsByTagName("name").item(0)
 									.getTextContent());
 					db.addCustomer(eElement.getElementsByTagName("name").item(0).getTextContent(),
@@ -84,18 +86,15 @@ public class DataLoader {
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				Node nNode = nList.item(temp);
 
-				System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
 					Element eElement = (Element) nNode;
-					System.out.println("First Name : "
+					System.out.println("Product Name : "
 							+ eElement.getElementsByTagName("name").item(0)
 									.getTextContent());
 					
-					db.addProduct("Misc", eElement.getElementsByTagName("name").item(0).getTextContent(), 
-							Double.parseDouble( eElement.getElementsByTagName("montrealPrice").item(0).getTextContent() )
-							, "2014-04-28");
+					Product p = new Product(eElement);
+					db.addProduct(p);
 				}
 			}
 		} catch (Exception e) {
