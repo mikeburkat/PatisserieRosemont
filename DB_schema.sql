@@ -5,13 +5,13 @@ CREATE TABLE customers (
                                    NOT NULL
                                    UNIQUE,
     name         VARCHAR( 0, 50 )  NOT NULL,
+    full_name    VARCHAR( 0, 50 )  NOT NULL,
     city         VARCHAR( 0, 30 )  NOT NULL,
     address      TEXT,
     postal_code  TEXT( 0, 7 ),
     phone_num    TEXT,
     price_used   VARCHAR( 0, 25 )  NOT NULL
-                                   DEFAULT ( 'montreal_price' ),
-    address_city TEXT( 0, 30 ) 
+                                   DEFAULT ( 'montreal_price' )
 );
 
 

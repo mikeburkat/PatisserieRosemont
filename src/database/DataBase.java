@@ -51,7 +51,7 @@ public class DataBase {
 		// init.runScript("random_placed_order.sql");
 		// init.runScript("random_contained.sql");
 		init.initProducts();
-		//init.initStores();
+		init.initStores();
 	}
 
 	public void createOrder(String store, String date) {
@@ -93,9 +93,18 @@ public class DataBase {
 		return productModel.getProductName(pID);
 	}
 
-	public void addCustomer(String name, String city, String address,
-			String postal, String phone) {
-		customerModel.addCustomer(name, city, address, postal, phone);
+	public void addCustomer(Customer c) {
+		Customer dbC = customerModel.getCustomer(c.name);
+		if (dbC == null) {
+			System.out.println("db customer " + c.name + " null");
+			customerModel.addCustomer(c);
+		} else {
+			if (!c.equals(dbC)) {
+				System.out.println(c.toString());
+				System.out.println(dbC.toString());
+				customerModel.replace(dbC, c);
+			}
+		}
 	}
 
 	public String getCustomerID(String store) {

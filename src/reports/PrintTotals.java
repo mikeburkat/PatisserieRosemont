@@ -12,6 +12,7 @@ import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import database.DataBase;
@@ -75,11 +76,29 @@ class PrintTotalsContent implements Printable {
 				bread + ", " + cake, "'Montreal'");
 		ArrayList<String[]> detailsOtt = db.getTotals(date,
 				bread + ", " + cake, "'Ottawa'");
+		
+		HashMap<String, String[]> mtlDeets = new HashMap<String, String[]>();
+		for (String[] mtl : detailsMtl) {
+			mtlDeets.put(mtl[0], mtl);
+		}
+		HashMap<String, String[]> ottDeets = new HashMap<String, String[]>();
+		for (String[] ott : detailsOtt) {
+			ottDeets.put(ott[0], ott);
+		}
 
 		details = new ArrayList<String[]>();
 		for (String[] detail : detailsAll) {
-			String[] arr = { detail[0], detail[1], new String("Ott"),
-					new String("Mtl") };
+			String[] mtl = mtlDeets.get(detail[0]);
+			String[] ott = ottDeets.get(detail[0]);
+			String m = "";
+			String o = "";
+			if (mtl != null && mtl.length >= 2) {
+				m = mtl[1];
+			}
+			if (ott != null && ott.length >= 2) {
+				o = ott[1];
+			}
+			String[] arr = { detail[0], detail[1], o, m};
 			details.add(arr);
 		}
 

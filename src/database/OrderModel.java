@@ -43,6 +43,7 @@ public class OrderModel {
 	
 	public void createOrder(String store, String date) {
 		if (store == null || date == null) return;
+		store = store.replace("'", "''");
 		String query = "insert into orders(total) values(0.0); "
 				+ "insert into placed_order(cid, oid, order_date) "
 					+ "values((select cid from customers where name='"+store+"'), "
@@ -111,7 +112,7 @@ public class OrderModel {
 		if (!pExists) {
 			addProductToOrder(store, oid, pid, quantity);
 			System.out.println("product was not found, adding new");
-		} else if (quantity == 0.0){
+		} else if (quantity == 0.0) {
 			deleteFromOrder(oid, pid);
 			System.out.println("product was found, deleting");
 		} else {

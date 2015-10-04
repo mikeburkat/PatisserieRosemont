@@ -116,7 +116,7 @@ public class ProductModel {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery(query);
 			if (rs.next()) {
-				return new Product(rs);				
+				return new Product(rs);		
 			} else {
 				return null;
 			}

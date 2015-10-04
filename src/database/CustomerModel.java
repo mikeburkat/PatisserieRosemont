@@ -17,14 +17,22 @@ public class CustomerModel {
 		database = DataBase.getInstance();
 		connection = conn;
 	}
+	
 
-	public void addCustomer(String name, String city, String address,
-			String postal, String phone) {
-		String query = "insert into "
-				+ "customers(name, city, address, postal_code, phone_num) "
-				+ "values(" + "'" + name + "', " + "'" + city + "', " + "'"
-				+ address + "', " + "'" + postal + "', " + "'" + phone + "'"
-				+ ")";
+	public void addCustomer(Customer c) {
+		String query = c.insertQuery();
+		System.out.println(query);
+		try {
+			statement = connection.createStatement();
+			statement.executeUpdate(query);
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
+	private void updateCustomer(Customer c) {
+		String query = c.updateQuery();
+		System.out.println(query);
 		try {
 			statement = connection.createStatement();
 			statement.executeUpdate(query);
@@ -35,8 +43,9 @@ public class CustomerModel {
 
 	public String getCustomerID(String store) {
 		String customerID = "";
-		String query = "select cid from customers " + "where name='" + store
-				+ "'";
+		store = store.replace("'", "''");
+		String query = "select cid from customers " + "where name='" + store + "'";
+		System.out.println(query);
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery(query);
@@ -52,8 +61,8 @@ public class CustomerModel {
 
 	public String getCustomerPriceSet(String store) {
 		String priceUsed = "";
-		String query = "select price_used from customers where name='" + store
-				+ "'";
+		store = store.replace("'", "''");
+		String query = "select price_used from customers where name='" + store + "'";
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery(query);
@@ -89,6 +98,7 @@ public class CustomerModel {
 	}
 
 	public ResultSet getCustomerDetails(String store) {
+		store = store.replace("'", "''");
 		String query = "select * from customers " + "where name='" + store + "'";
 		try {
 			statement = connection.createStatement();
@@ -102,4 +112,26 @@ public class CustomerModel {
 		return null;
 	}
 
+
+	public Customer getCustomer(String store) {
+		String query = "select * from customers " + "where name='" + store + "'";
+		System.out.println(query);
+		try {
+			statement = connection.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+			if (rs.next()) {
+				return new Customer(rs);
+			} else {
+				return null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void replace(Customer dbC, Customer c) {
+		c.cid = dbC.cid;
+		this.updateCustomer(c);
+	}
 }

@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.w3c.dom.Element;
 
 public class Product {
@@ -54,21 +53,21 @@ public class Product {
 		}
 	}
 
-	public Product(Element eElement) {
-		this.name = eElement.getElementsByTagName("name").item(0)
+	public Product(Element e) {
+		this.name = e.getElementsByTagName("name").item(0)
 				.getTextContent();
-		this.category = eElement.getElementsByTagName("category").item(0)
+		this.category = e.getElementsByTagName("category").item(0)
 				.getTextContent();
 		this.montrealPrice = Double
-				.parseDouble(eElement.getElementsByTagName("montrealPrice")
+				.parseDouble(e.getElementsByTagName("montrealPrice")
 						.item(0).getTextContent());
-		this.ottawaPrice = Double.parseDouble(eElement
+		this.ottawaPrice = Double.parseDouble(e
 				.getElementsByTagName("ottawaPrice").item(0).getTextContent());
-		this.kosciolPrice = Double.parseDouble(eElement
+		this.kosciolPrice = Double.parseDouble(e
 				.getElementsByTagName("kosciolPrice").item(0).getTextContent());
-		this.cecilPrice = Double.parseDouble(eElement
+		this.cecilPrice = Double.parseDouble(e
 				.getElementsByTagName("cecilPrice").item(0).getTextContent());
-		this.rosemontPrice = Double.parseDouble(eElement
+		this.rosemontPrice = Double.parseDouble(e
 				.getElementsByTagName("storePrice").item(0).getTextContent());
 		this.dateCreated = new Date();
 	}

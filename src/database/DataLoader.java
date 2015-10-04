@@ -50,12 +50,9 @@ public class DataLoader {
 					System.out.println("Store Name : "
 							+ eElement.getElementsByTagName("name").item(0)
 									.getTextContent());
-					db.addCustomer(eElement.getElementsByTagName("name").item(0).getTextContent(),
-							eElement.getElementsByTagName("city").item(0).getTextContent(),
-							eElement.getElementsByTagName("address").item(0).getTextContent(),
-							"",
-							eElement.getElementsByTagName("phone").item(0).getTextContent()
-							);
+					
+					Customer c = new Customer(eElement);
+					db.addCustomer(c);
 				}
 			}
 

@@ -1,25 +1,15 @@
 package print;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.AttributedCharacterIterator;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import orders.OrderDetails;
 import database.DataBase;
 
 public class PrintOrder implements Printable {
@@ -136,11 +126,8 @@ public class PrintOrder implements Printable {
 		g.drawString("Client:", x, y);
 		x += 50;
 		try {
-			g.drawString(customer.getString("name"), x, y);
+			g.drawString(customer.getString("full_name"), x, y);
 			g.drawString(customer.getString("address"), x, y += 15);
-			g.drawString(
-					(customer.getString("address_city") == null) ? "Unknown"
-							: customer.getString("address_city"), x, y += 15);
 			g.drawString(customer.getString("postal_code"), x, y += 15);
 			g.drawString(customer.getString("phone_num"), x, y += 15);
 		} catch (SQLException e) {
