@@ -23,8 +23,8 @@ public class TotalsPanel extends JPanel implements ActionListener {
 	String[] columns = { "quantity", "Product" };
 	JTable table;
 	DataBase db;
-	String bread = "'bread', 'pastry'";
-	String cake = "'other', 'cake'";
+	String bread = "'bread'";
+	String cake = "'pastry'";
 	String productChoice = bread + ", " + cake;
 	String cityChoice = "'Montreal', 'Ottawa'";
 	JScrollPane sp;
@@ -149,7 +149,7 @@ public class TotalsPanel extends JPanel implements ActionListener {
 
 	private void print() {
 		System.out.println("PRITING SELECTION");
-		PrintTotals pt = new PrintTotals(date);
+		PrintTotalsPortrait pt = new PrintTotalsPortrait(date);
 	}
 
 }

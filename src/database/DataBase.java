@@ -192,7 +192,7 @@ public class DataBase {
 			String cityChoice) {
 		ArrayList<String[]> result = new ArrayList<String[]>();
 
-		String query = "select P.pid, P.name, sum(C.quantity) "
+		String query = "select P.pid, P.name, sum(C.quantity), P.category "
 				+ "from placed_order PO, contained C, products P, customers S "
 				+ "where PO.oid=C.oid " + "and P.pid=C.pid "
 				+ "and S.cid=PO.cid " + "and PO.order_date='" + date + "' "
@@ -207,7 +207,8 @@ public class DataBase {
 			while (rs.next()) {
 				String p = rs.getString("name");
 				String q = rs.getString("sum(C.quantity)");
-				System.out.println("name: " + p + " quant: " + q);
+				String cat = rs.getString("category");
+				System.out.println("name: " + p + " quant: " + q + " cat: " + cat);
 				result.add(new String[] { p, q });
 			}
 		} catch (SQLException e) {
