@@ -24,7 +24,6 @@ CREATE TABLE products (
     montreal_price REAL              NOT NULL,
     ottawa_price   REAL              NOT NULL,
     kosciol_price  REAL              NOT NULL,
-    cecil_price    REAL              NOT NULL,
     rosemont_price REAL              NOT NULL,
     updated        BOOLEAN           NOT NULL
                                      DEFAULT ( 0 ),

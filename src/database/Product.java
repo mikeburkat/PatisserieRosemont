@@ -14,7 +14,6 @@ public class Product {
 	double montrealPrice;
 	double ottawaPrice;
 	double kosciolPrice;
-	double cecilPrice;
 	double rosemontPrice;
 	boolean updated;
 	Date dateCreated;
@@ -28,7 +27,6 @@ public class Product {
 		this.category = rs.getString("category");
 		this.montrealPrice = rs.getDouble("montreal_price");
 		this.ottawaPrice = rs.getDouble("ottawa_price");
-		this.cecilPrice = rs.getDouble("cecil_price");
 		this.kosciolPrice = rs.getDouble("kosciol_price");
 		this.rosemontPrice = rs.getDouble("rosemont_price");
 		this.updated = rs.getBoolean("updated");
@@ -65,8 +63,6 @@ public class Product {
 				.getElementsByTagName("ottawaPrice").item(0).getTextContent());
 		this.kosciolPrice = Double.parseDouble(e
 				.getElementsByTagName("kosciolPrice").item(0).getTextContent());
-		this.cecilPrice = Double.parseDouble(e
-				.getElementsByTagName("cecilPrice").item(0).getTextContent());
 		this.rosemontPrice = Double.parseDouble(e
 				.getElementsByTagName("storePrice").item(0).getTextContent());
 		this.dateCreated = new Date();
@@ -86,7 +82,6 @@ public class Product {
 				&& this.montrealPrice == other.montrealPrice
 				&& this.ottawaPrice == other.ottawaPrice
 				&& this.kosciolPrice == other.kosciolPrice
-				&& this.cecilPrice == other.cecilPrice
 				&& this.rosemontPrice == other.rosemontPrice;
 	}
 
@@ -101,7 +96,7 @@ public class Product {
 	public String getInsertQuery() {
 		String query = "insert into "
 				+ "products(name, category, montreal_price, ottawa_price, kosciol_price, "
-				+ "cecil_price, rosemont_price, date_created, updated, original_id) "
+				+ "rosemont_price, date_created, updated, original_id) "
 				+ "values(" + "'"
 				+ this.name
 				+ "', "
@@ -116,9 +111,6 @@ public class Product {
 				+ "', "
 				+ "'"
 				+ this.kosciolPrice
-				+ "', "
-				+ "'"
-				+ this.cecilPrice
 				+ "', "
 				+ "'"
 				+ this.rosemontPrice
@@ -148,7 +140,6 @@ public class Product {
 			+ " mtl: " + this.montrealPrice
 			+ " ott: " + this.ottawaPrice
 			+ " kosc: " + this.kosciolPrice
-			+ " cecil: " + this.cecilPrice
 			+ " rsmt: " + this.rosemontPrice
 			+ " updated: " + this.updated
 			+ " created: " + this.dateCreated
