@@ -10,6 +10,62 @@ public class Customer {
 	int cid;
 	String name;
 	String fullName;
+	public int getCid() {
+		return cid;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public String getPostal() {
+		return postal;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public String getPriceUsed() {
+		return priceUsed;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public void setPostal(String postal) {
+		this.postal = postal;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public void setPriceUsed(String priceUsed) {
+		this.priceUsed = priceUsed;
+	}
+
 	String city;
 	String address;
 	String postal;
@@ -42,6 +98,17 @@ public class Customer {
 		this.priceUsed = e.getElementsByTagName("priceUsed").item(0).getTextContent();
 	}
 	
+	public Customer() {
+		this.cid = 0;
+		this.name = "";
+		this.fullName = "";
+		this.city = "";
+		this.address = "";
+		this.postal = "";
+		this.phone = "";
+		this.priceUsed = "";
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {

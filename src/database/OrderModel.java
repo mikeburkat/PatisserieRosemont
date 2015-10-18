@@ -75,6 +75,7 @@ public class OrderModel {
 				e.printStackTrace();
 			}
 		}
+		updateOrderTotal(oid);
 	}
 	
 	public String getOrderID(String store, String date) {
@@ -139,7 +140,7 @@ public class OrderModel {
 	}
 	
 	private void updateOrderTotal(String oid) {
-		String query = "update orders set total=(select sum(sub_total) from contained where oid="+oid+") where oid="+oid;
+		String query = "update orders set total=ifnull((select sum(sub_total) from contained where oid="+oid+"), 0.0) where oid="+oid;
 		System.out.println(query);
 		try {
 			statement = connection.createStatement();

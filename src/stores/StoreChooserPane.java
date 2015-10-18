@@ -7,6 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import database.Customer;
+import database.DataBase;
 import net.miginfocom.swing.MigLayout;
 import orders.OrdersPanel;
 
@@ -16,13 +18,14 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 	private StoreChooser montreal;
 	private StoreChooser ottawa;
 	private JLabel selectedStore;
+	private CustomerDetailsPanel details;
 	private JButton addNew;
 	private OrdersPanel orders;
 	private String date;
 
 	public StoreChooserPane(OrdersPanel o) {
 		orders = o;
-		selectedStore = new JLabel("Not Selected Yet");
+		details = new CustomerDetailsPanel(new Customer());
 		montreal = new StoreChooser("Montreal");
 		ottawa = new StoreChooser("Ottawa");
 		
@@ -34,29 +37,36 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 		mig.setRowConstraints("[30]20[grow]");
 		
 		this.setLayout(mig);
-		
-		this.add(selectedStore, "center, span 2");
+		this.redraw();
+	}
+	
+	public void redraw() {
+		this.removeAll();
+		this.add(details, "center, span 2");
 		this.add(montreal, "center");
 		this.add(ottawa, "center");
-		
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		System.out.println(evt.getPropertyName() + " " + evt.getNewValue());
 		// clear selection if selection in different city
-		if (evt.getPropertyName() == "Montreal") {
-			String s = (String) evt.getNewValue();
-			selectedStore.setText(s);
-			orders.setStore(s);
-			ottawa.clearSelection();
-		} else if (evt.getPropertyName() == "Ottawa") {
-			String s = (String) evt.getNewValue();
-			selectedStore.setText(s);
-			orders.setStore(s);
-			montreal.clearSelection();
+		if (evt.getPropertyName() != "Montreal" && evt.getPropertyName() != "Ottawa") {
+			return;
 		}
 		
+		String s = (String) evt.getNewValue();
+		orders.setStore(s);
+		
+		DataBase db = DataBase.getInstance();
+		Customer c = db.getCustomer(s);
+		details.setCustomer(c);
+		
+		if (evt.getPropertyName() == "Montreal") {
+			ottawa.clearSelection();
+		} else if (evt.getPropertyName() == "Ottawa") {
+			montreal.clearSelection();
+		}
 	}
 
 	

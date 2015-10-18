@@ -110,6 +110,11 @@ public class DataBase {
 	public String getCustomerID(String store) {
 		return customerModel.getCustomerID(store);
 	}
+	
+	public Customer getCustomer(String store) {
+		store = store.replace("'", "''");
+		return customerModel.getCustomer(store);
+	}
 
 	public ResultSet getCustomerDetails(String store) {
 		return customerModel.getCustomerDetails(store);
