@@ -37,11 +37,6 @@ public class StoreChooserPane extends JPanel implements PropertyChangeListener{
 		mig.setRowConstraints("[30]20[grow]");
 		
 		this.setLayout(mig);
-		this.redraw();
-	}
-	
-	public void redraw() {
-		this.removeAll();
 		this.add(details, "center, span 2");
 		this.add(montreal, "center");
 		this.add(ottawa, "center");
