@@ -155,14 +155,14 @@ class PrintTotalsPortraitContent implements Printable {
 	}
 
 	private void printContentBar(Graphics g, PageFormat pf) {
-		int x = 0;
+		int x = 5;
 		int y = 12;
 
 		for (int i = 0; i < 2; i++) {
 			g.drawString("Item", x, y);
 			g.drawString("Total", x += 160, y);
 			g.drawString("OTT", x += 50, y);
-			g.drawString("MTL", x += 50, y);
+			g.drawString("MTL", x += 45, y);
 			x = 300;
 		}
 
@@ -177,18 +177,18 @@ class PrintTotalsPortraitContent implements Printable {
 		if (index < details.size()) {
 			it = details.listIterator(index);
 		}
-		int x = 0;
+		int x = 6;
 		int column = 0;
 		while (it != null && it.hasNext()) {
 			String[] product = it.next();
 			System.out.println(index + " : " + y + " : " + product[1] + " : "
 					+ product[0]);
-			x = 0 + 300 * column;
+			x = 6 + 300 * column;
 			g.drawString(product[0], x, y);
 			g.drawString(product[1], x += 160, y);
 			g.drawString(product[2], x += 50, y);
 			g.drawString(product[3], x += 50, y);
-			g.drawLine(300*column, y+3, 300*column + 300, y+3);
+			g.drawLine(300*column - 3, y+3, 300*column + 300 - 3, y+3);
 			y += 15;
 			index++;
 			if (y > pf.getImageableHeight()) {
