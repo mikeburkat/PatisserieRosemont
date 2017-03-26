@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
-
 import orders.OrderDetails;
 
 public class DataBase {
@@ -146,7 +144,11 @@ public class DataBase {
 
 	public ArrayList<OrderDetails> getOrderDetails(String store, String date,
 			String orderBy) {
-		return orderModel.getOrderDetails(store, date, orderBy);
+		return orderModel.getOrderDetails(store, date, orderBy, "");
+	}
+	
+	public ArrayList<OrderDetails> searchOrderDetails(String store, String date, String orderBy, String search) {
+		return orderModel.getOrderDetails(store, date, orderBy, search);
 	}
 
 	public ArrayList<String[]> getOrderDetailsForPrinting(String store,

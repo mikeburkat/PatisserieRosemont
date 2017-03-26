@@ -2,12 +2,14 @@ package orders;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 public class MyTableCellEditor extends DefaultCellEditor {
@@ -16,16 +18,16 @@ public class MyTableCellEditor extends DefaultCellEditor {
 	private static final long serialVersionUID = 1L;
 	// This is the component that will handle the editing of the cell value
 	JFormattedTextField ftf;
+	private JTextField searchField;
 
 	public MyTableCellEditor() {
 		super(new JFormattedTextField());
+		
 		ftf = (JFormattedTextField) getComponent();
-		ftf.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
-				"check");
+		ftf.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "check");
 		ftf.getActionMap().put("check", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				try { // The text is valid,
 					ftf.commitEdit(); // so use it.
 					ftf.postActionEvent(); // stop editing
@@ -56,6 +58,21 @@ public class MyTableCellEditor extends DefaultCellEditor {
 		// System.out.println("Formatting "+nf.format(value));
 		// table.setValueAt(value, rowIndex, vColIndex);
 
+		ftf.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "jumpToSearch");
+		ftf.getActionMap().put("jumpToSearch", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try { // The text is valid,
+					ftf.commitEdit(); // so use it.
+					ftf.postActionEvent(); // stop editing
+					cancelCellEditing();
+				} catch (java.text.ParseException exc) {
+				}
+				System.out.println("jumpToSearch2");
+				searchField.requestFocusInWindow();
+			}
+		});
+		
 		// Return the configured component
 		return ftf;
 	}
@@ -68,6 +85,10 @@ public class MyTableCellEditor extends DefaultCellEditor {
 				+ Double.valueOf(ftf.getText()));
 		return Double.valueOf(((JFormattedTextField) ftf).getText());
 
+	}
+
+	public void setSearchFiled(JTextField searchField) {
+		this.searchField = searchField;
 	}
 
 }

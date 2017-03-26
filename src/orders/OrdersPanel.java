@@ -4,11 +4,17 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -17,6 +23,8 @@ public class OrdersPanel extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JLabel storeLabel;
 	private JLabel dateLabel;
+	private JLabel searchLabel;
+	private JTextField searchField;
 	private OrderTable table;
 	private JScrollPane tableScroller;
 	private JButton toTop;
@@ -38,6 +46,8 @@ public class OrdersPanel extends JPanel implements ActionListener{
 	public OrdersPanel() {
 		storeLabel = new JLabel("Sklep: Not chosen");
 		dateLabel = new JLabel("Data: Not chosen");
+		searchLabel = new JLabel("Search:");
+		searchField = new JTextField("", 50);
 		table = new OrderTable();
 		toTop = new JButton(TOTOP);
 		lastWeek = new JButton(LASTWEEK);
@@ -60,20 +70,40 @@ public class OrdersPanel extends JPanel implements ActionListener{
 		
 		MigLayout mig = new MigLayout("wrap 6");
 		mig.setColumnConstraints("[grow][grow][grow][grow][grow][grow]");
-		mig.setRowConstraints("[30]20[grow][grow][grow][grow][grow]30");
+		mig.setRowConstraints("[30]20[grow][grow][grow][grow][grow][grow][grow][grow]30");
 		this.setLayout(mig);
 		
-		this.add(dateLabel, "span 3, center");
-		this.add(storeLabel, "span 2, center");
-		this.add(tableScroller, "cell 0 1 6 3, center");
+		this.add(dateLabel, "cell 0 0 3 1, center");
+		this.add(storeLabel, "cell 1 0 3 1, center");
+		this.add(searchLabel, "cell 1 1 1 1, center");
+		this.add(searchField, "span 2 1 5 1, center");
+		this.add(tableScroller, "cell 0 2 6 4, center");
 		this.add(normal, "center");
 		this.add(alphabetical, "center");
 		this.add(toTop, "center");
 		this.add(lastWeek, "center");
 //		this.add(heuristic, "center");
 		this.add(clear, "center");
-		this.add(lastWeekCopy, "cell 3 5 1 1, center");
+		this.add(lastWeekCopy, "cell 3 7 1 1, center");
 		
+		searchField.getDocument().addDocumentListener((SearchDocumentListener) e -> {
+			System.out.println("Search: " + searchField.getText());
+			table.search(searchField.getText());
+			table.repaint();
+			tableScroller.getViewport().setViewPosition(new Point(0,0));
+		});
+		
+		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "jumpToTable");
+		searchField.getActionMap().put("jumpToTable", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			System.out.println("jumpToTable");
+			table.requestFocusInWindow();
+			table.changeSelection(0, 0, false, false);
+		}
+	});
+		
+		table.setSearchField(searchField);
 	}
 
 	public void setDate(String d) {
@@ -121,11 +151,25 @@ public class OrdersPanel extends JPanel implements ActionListener{
 				break;
 				
 		}
-		
 		table.repaint();
 		tableScroller.getViewport().setViewPosition(new Point(0,0));
-			
 	}
-	
 
+	@FunctionalInterface
+	public interface SearchDocumentListener extends DocumentListener {
+	    void textUpdate(DocumentEvent e);
+
+	    @Override
+	    default void insertUpdate(DocumentEvent e) {
+	        textUpdate(e);
+	    }
+	    @Override
+	    default void removeUpdate(DocumentEvent e) {
+	        textUpdate(e);
+	    }
+	    @Override
+	    default void changedUpdate(DocumentEvent e) {
+	        textUpdate(e);
+	    }
+	}
 }
