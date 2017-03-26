@@ -27,7 +27,7 @@ public class OrderTableModel extends AbstractTableModel {
 		boolean present = db.isOrderPresent(date, store);
 		if (present) {
 			createDefaultOrder();
-			retrieveOrder(store, date, "pid asc");
+			retrieveOrder(store, date, "original asc");
 		} else {
 			createDefaultOrder();
 			db.createOrder(store, date);
@@ -106,7 +106,7 @@ public class OrderTableModel extends AbstractTableModel {
 	}
 
 	public void pushToTop() {
-		retrieveOrder(store, date, "quantity desc, pid asc");
+		retrieveOrder(store, date, "quantity desc, original asc");
 	}
 	
 	public void alphabetical() {
@@ -126,7 +126,7 @@ public class OrderTableModel extends AbstractTableModel {
 		}
 		cal.add(Calendar.DATE, -7);
 		String lastWeekDate = sdf.format(cal.getTime());
-		retrieveOrder(store, lastWeekDate, "quantity desc, pid asc");
+		retrieveOrder(store, lastWeekDate, "quantity desc, original asc");
 	}
 	
 	public void sameAsLastWeekCopy() {
@@ -145,7 +145,7 @@ public class OrderTableModel extends AbstractTableModel {
 
 	public void clear() {
 		db.deleteOrder(store, date);
-		retrieveOrder(store, date, "pid asc");
+		retrieveOrder(store, date, "original asc");
 	}
 
 	

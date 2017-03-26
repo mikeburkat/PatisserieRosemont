@@ -94,7 +94,7 @@ public class ProductModel {
 		System.out.println("here");
 		try {
 			statement = connection.createStatement();
-			ResultSet rs = statement.executeQuery("select name, pid from products");
+			ResultSet rs = statement.executeQuery("select name, pid from products where updated = 'false'");
 			while (rs.next()) {
 				String p = rs.getString("name");
 				String pid = rs.getString("pid");
@@ -111,7 +111,7 @@ public class ProductModel {
 	}
 
 	public Product getProduct(String name) {
-		String query = "select * from products where name='"+name+"' and updated='false'";
+		String query = "select * from products where name='"+name+"' and updated = 'false'";
 		try {
 			statement = connection.createStatement();
 			ResultSet rs = statement.executeQuery(query);
