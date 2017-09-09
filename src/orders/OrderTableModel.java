@@ -148,8 +148,21 @@ public class OrderTableModel extends AbstractTableModel {
 		retrieveOrder(store, date, "original asc");
 	}
 
-	
+	public void search(String str) {
+		if (str.isEmpty()) {
+			pushToTop();
+			return;
+		}
+		searchOrder(store, date, str);
+	}
 
-
+	private void searchOrder(String store, String date, String search) {
+		ArrayList<OrderDetails> od = db.searchOrderDetails(store, date, "original asc", search);
+		orderDetails = new OrderDetails[od.size()];
+		for (int i = 0; i < od.size(); i++) {
+			orderDetails[i] = od.get(i);
+//			setValueAt(od.get(i).getQuantity(), i, 0);
+		}
+	}
 
 }

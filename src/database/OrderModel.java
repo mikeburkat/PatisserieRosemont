@@ -200,23 +200,32 @@ public class OrderModel {
 		return stores;
 	}
 	
-	public ArrayList<OrderDetails> getOrderDetails(String store, String date, String orderBy) {
+	public ArrayList<OrderDetails> getOrderDetails(String store, String date, String orderBy, String search) {
 		
 		ArrayList<OrderDetails> od = new ArrayList<OrderDetails>();
 		String oid = getOrderID(store, date);
 		String query = "select details.pid, name, details.quantity, category, "
 				+ "(case when original_id = 'NULL' then pid else original_id end) as original "
 				+ "from (select pid, quantity from contained "
-				+ "where oid='"+oid+"') details left join products using(pid) "
-				+ "union "
+				+ "where oid='"+oid+"') details left join products using(pid) ";
+		
+		if (!search.isEmpty())
+			query += "where name like '%" + search + "%' ";
+		
+		query += "union "
 				+ "select pid, name, 0.0, category, "
 				+ "(case when original_id = 'NULL' then pid else original_id end) as original "
 				+ "from products "
 				+ "where pid in (select pid from products "
 				+ "where pid not in (select C.pid from contained C where oid='"+oid+"') "
 				+ "and original_id not in (select C.pid from contained C where oid='"+oid+"') "
-				+ "and updated = 'false') "
-				+ "order by " + orderBy;
+				+ "and updated = 'false' ";
+		
+		if (!search.isEmpty())
+			query += "and name like '%" + search + "%' ";
+		
+		query += ") order by " + orderBy;
+		
 		System.out.println(query);
 		try {
 			statement = connection.createStatement();
@@ -289,6 +298,4 @@ public class OrderModel {
 		}
 		return null;
 	}
-	
-
 }
