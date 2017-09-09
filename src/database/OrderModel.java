@@ -204,14 +204,18 @@ public class OrderModel {
 		
 		ArrayList<OrderDetails> od = new ArrayList<OrderDetails>();
 		String oid = getOrderID(store, date);
-		String query = "select details.pid, name, details.quantity, category "
+		String query = "select details.pid, name, details.quantity, category, "
+				+ "(case when original_id = 'NULL' then pid else original_id end) as original "
 				+ "from (select pid, quantity from contained "
 				+ "where oid='"+oid+"') details left join products using(pid) "
 				+ "union "
-				+ "select pid, name, 0.0, category "
+				+ "select pid, name, 0.0, category, "
+				+ "(case when original_id = 'NULL' then pid else original_id end) as original "
 				+ "from products "
 				+ "where pid in (select pid from products "
-				+ "where pid not in (select C.pid from contained C where oid='"+oid+"')) "
+				+ "where pid not in (select C.pid from contained C where oid='"+oid+"') "
+				+ "and original_id not in (select C.pid from contained C where oid='"+oid+"') "
+				+ "and updated = 'false') "
 				+ "order by " + orderBy;
 		System.out.println(query);
 		try {
